@@ -4,1857 +4,904 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MMS Blox</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --bg: #f2f4f5;
-            --card: #ffffff;
-            --nav: #191b1d;
-            --green: #00b06f;
-            --green2: #009a5e;
-            --blue: #0059b3;
-            --red: #ff4d4d;
-            --gold: #f7ba2c;
-            --text: #393b3d;
-            --text2: #8c8e92;
-            --border: #dcddde;
-            --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-            --radius: 8px;
-            --radius2: 12px;
-            --font: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.4;
-            font-size: 14px;
-        }
-        #app {
-            width: 100%;
-            min-height: 100vh;
-        }
-        .topnav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: var(--nav);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
-            gap: 12px;
-        }
-        .topnav .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .topnav .logo .sq {
-            width: 32px;
-            height: 32px;
-            background: #e2231a;
-            border-radius: 6px;
-            transform: rotate(5deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 900;
-            font-size: 11px;
-            letter-spacing: -0.5px;
-        }
-        .topnav .logo span {
-            color: #fff;
-            font-weight: 700;
-            font-size: 18px;
-            letter-spacing: -0.5px;
-        }
-        .topnav .search {
-            flex: 1;
-            max-width: 500px;
-            position: relative;
-        }
-        .topnav .search input {
-            width: 100%;
-            padding: 8px 14px 8px 36px;
-            border-radius: 20px;
-            border: none;
-            background: #2d3238;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .topnav .search input::placeholder {
-            color: #888;
-        }
-        .topnav .search .sicon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-            font-size: 14px;
-        }
-        .topnav .icons {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            color: #ccc;
-            font-size: 18px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .topnav .icons .avthumb {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #555;
-            border: 2px solid #888;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        .topnav .icons .avthumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .main-content {
-            margin-top: 56px;
-            min-height: calc(100vh - 56px);
-        }
-        .page {
-            display: none;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .page.active {
-            display: block;
-        }
-        .card {
-            background: var(--card);
-            border-radius: var(--radius2);
-            box-shadow: var(--shadow);
-            padding: 24px;
-            margin-bottom: 16px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-            text-align: center;
-            font-family: var(--font);
-        }
-        .btn-green {
-            background: linear-gradient(180deg, #00b06f 0%, #009a5e 100%);
-            color: #fff;
-        }
-        .btn-green:hover {
-            background: linear-gradient(180deg, #00c07a 0%, #00a868 100%);
-        }
-        .btn-white {
-            background: #fff;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        .btn-white:hover {
-            background: #f8f8f8;
-        }
-        .btn-red {
-            background: var(--red);
-            color: #fff;
-        }
-        .btn-red:hover {
-            background: #e04040;
-        }
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 13px;
-            border-radius: 6px;
-        }
-        input[type="text"],
-        input[type="password"],
-        input[type="email"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-family: var(--font);
-            outline: none;
-            transition: border 0.2s;
-            background: #fff;
-        }
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--green);
-        }
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal {
-            background: #fff;
-            border-radius: var(--radius2);
-            padding: 28px;
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .modal h3 {
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            z-index: 3000;
-            animation: fadeInOut 3s forwards;
-        }
-        @keyframes fadeInOut {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            10% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            80% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-        }
-        .game-card {
-            background: #fff;
-            border-radius: var(--radius2);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .game-card:hover {
-            transform: translateY(-4px);
-        }
-        .game-card .thumb {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
-            font-size: 24px;
-            position: relative;
-        }
-        .game-card .thumb .play-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .game-card:hover .play-overlay {
-            opacity: 1;
-        }
-        .game-card .play-overlay .play-btn {
-            background: var(--green);
-            color: #fff;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .game-card .info {
-            padding: 10px 12px;
-        }
-        .game-card .info .title {
-            font-weight: 700;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .game-card .info .meta {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .badge-verified {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            background: #3399ff;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 10px;
-            text-align: center;
-            line-height: 18px;
-            margin-left: 4px;
-            vertical-align: middle;
-            font-weight: 900;
-        }
-        .badge-admin {
-            display: inline-block;
-            background: #e2231a;
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 4px;
-            vertical-align: middle;
-            font-weight: 700;
-        }
-        .tab-nav {
-            display: flex;
-            gap: 0;
-            border-bottom: 2px solid #e0e0e0;
-            margin-bottom: 16px;
-        }
-        .tab-nav .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            font-weight: 600;
-            color: var(--text2);
-            transition: 0.2s;
-        }
-        .tab-nav .tab.active {
-            color: var(--text);
-            border-bottom-color: var(--text);
-        }
-        .tag {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            background: #e8e8e8;
-            margin: 2px;
-        }
-        .tag-green {
-            background: #d4f5e6;
-            color: #00804a;
-        }
-        .tag-red {
-            background: #fde0e0;
-            color: #c0392b;
-        }
-        .tag-blue {
-            background: #dceeff;
-            color: #2471a3;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table th,
-        table td {
-            padding: 10px 12px;
-            text-align: left;
-            border-bottom: 1px solid #e8e8e8;
-        }
-        table th {
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--text2);
-        }
-        .avatar-preview-3d {
-            width: 100%;
-            height: 400px;
-            background: #e8e8e8;
-            border-radius: var(--radius2);
-            overflow: hidden;
-            cursor: grab;
-            position: relative;
-        }
-        .avatar-preview-3d canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        .sidebar-layout {
-            display: flex;
-            gap: 20px;
-        }
-        .sidebar-layout .side {
-            width: 240px;
-            flex-shrink: 0;
-            background: #fff;
-            border-radius: var(--radius2);
-            box-shadow: var(--shadow);
-            padding: 12px 0;
-        }
-        .sidebar-layout .side a {
-            display: block;
-            padding: 10px 20px;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.15s;
-            border-left: 3px solid transparent;
-        }
-        .sidebar-layout .side a:hover,
-        .sidebar-layout .side a.active {
-            background: #f5f5f5;
-            border-left-color: var(--green);
-            font-weight: 700;
-        }
-        .sidebar-layout .main {
-            flex: 1;
-            min-width: 0;
-        }
-        .bubble-chat {
-            background: #fff;
-            border-radius: 16px;
-            padding: 8px 14px;
-            display: inline-block;
-            max-width: 80%;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: relative;
-            margin: 4px 0;
-        }
-        .bubble-chat.self {
-            background: #e3f2fd;
-            float: right;
-        }
-        .notification-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #e2231a;
-            color: #fff;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
+            --bg: #f2f4f5; --card: #ffffff; --nav: #191b1d; --green: #00b06f; --green2: #009a5e;
+            --blue: #0059b3; --red: #ff4d4d; --gold: #f7ba2c; --text: #393b3d; --text2: #8c8e92;
+            --border: #dcddde; --shadow: 0 1px 4px rgba(0,0,0,0.08); --radius: 8px; --radius2: 12px;
+            --font: 'Source Sans Pro','Helvetica Neue',Arial,sans-serif;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.4; font-size:14px; }
+        #app { width:100%; min-height:100vh; }
+        .topnav { position:fixed; top:0; left:0; right:0; height:56px; background:var(--nav); display:flex; align-items:center; padding:0 20px; z-index:1000; gap:12px; }
+        .topnav .logo { display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; }
+        .topnav .logo .sq { width:32px; height:32px; background:#e2231a; border-radius:6px; transform:rotate(5deg); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:11px; letter-spacing:-0.5px; }
+        .topnav .logo span { color:#fff; font-weight:700; font-size:18px; letter-spacing:-0.5px; }
+        .topnav .search { flex:1; max-width:500px; position:relative; }
+        .topnav .search input { width:100%; padding:8px 14px 8px 36px; border-radius:20px; border:none; background:#2d3238; color:#fff; font-size:14px; outline:none; }
+        .topnav .search input::placeholder { color:#888; }
+        .topnav .search .sicon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#888; font-size:14px; }
+        .topnav .icons { display:flex; gap:16px; align-items:center; color:#ccc; font-size:18px; cursor:pointer; flex-shrink:0; }
+        .topnav .icons .avthumb { width:32px; height:32px; border-radius:50%; background:#555; border:2px solid #888; cursor:pointer; overflow:hidden; }
+        .main-content { margin-top:56px; min-height:calc(100vh - 56px); }
+        .page { display:none; padding:20px; max-width:1200px; margin:0 auto; }
+        .page.active { display:block; }
+        .card { background:var(--card); border-radius:var(--radius2); box-shadow:var(--shadow); padding:24px; margin-bottom:16px; }
+        .btn { display:inline-block; padding:10px 20px; border-radius:var(--radius); font-weight:600; font-size:16px; cursor:pointer; border:none; transition:0.2s; text-align:center; font-family:var(--font); }
+        .btn-green { background:linear-gradient(180deg,#00b06f 0%,#009a5e 100%); color:#fff; }
+        .btn-green:hover { background:linear-gradient(180deg,#00c07a 0%,#00a868 100%); }
+        .btn-white { background:#fff; border:1px solid var(--border); color:var(--text); }
+        .btn-white:hover { background:#f8f8f8; }
+        .btn-red { background:var(--red); color:#fff; }
+        .btn-red:hover { background:#e04040; }
+        .btn-sm { padding:6px 14px; font-size:13px; border-radius:6px; }
+        input[type="text"],input[type="password"],input[type="email"],input[type="number"],select,textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; font-family:var(--font); outline:none; transition:border 0.2s; background:#fff; }
+        input:focus,select:focus,textarea:focus { border-color:var(--green); }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; display:flex; align-items:center; justify-content:center; }
+        .modal { background:#fff; border-radius:var(--radius2); padding:28px; max-width:480px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+        .modal h3 { margin-bottom:16px; font-size:20px; }
+        .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:12px 20px; border-radius:var(--radius); z-index:3000; animation:fadeInOut 3s forwards; }
+        @keyframes fadeInOut { 0%{opacity:0;transform:translateY(20px)} 10%{opacity:1;transform:translateY(0)} 80%{opacity:1} 100%{opacity:0;transform:translateY(-10px)} }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+        .game-card { background:#fff; border-radius:var(--radius2); overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform 0.2s; }
+        .game-card:hover { transform:translateY(-4px); }
+        .game-card .thumb { width:100%; aspect-ratio:16/9; background:#e0e0e0; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:24px; position:relative; }
+        .game-card .thumb .play-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+        .game-card:hover .play-overlay { opacity:1; }
+        .game-card .play-overlay .play-btn { background:var(--green); color:#fff; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; }
+        .game-card .info { padding:10px 12px; }
+        .game-card .info .title { font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .game-card .info .meta { font-size:12px; color:var(--text2); }
+        .badge-verified { display:inline-block; width:18px; height:18px; background:#3399ff; border-radius:4px; color:#fff; font-size:10px; text-align:center; line-height:18px; margin-left:4px; vertical-align:middle; font-weight:900; }
+        .badge-admin { display:inline-block; background:#e2231a; color:#fff; font-size:10px; padding:2px 6px; border-radius:3px; margin-left:4px; vertical-align:middle; font-weight:700; }
+        .tab-nav { display:flex; gap:0; border-bottom:2px solid #e0e0e0; margin-bottom:16px; }
+        .tab-nav .tab { padding:10px 20px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; font-weight:600; color:var(--text2); transition:0.2s; }
+        .tab-nav .tab.active { color:var(--text); border-bottom-color:var(--text); }
+        .tag { display:inline-block; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; background:#e8e8e8; margin:2px; }
+        .tag-green { background:#d4f5e6; color:#00804a; }
+        .tag-red { background:#fde0e0; color:#c0392b; }
+        .tag-blue { background:#dceeff; color:#2471a3; }
+        table { width:100%; border-collapse:collapse; }
+        table th,table td { padding:10px 12px; text-align:left; border-bottom:1px solid #e8e8e8; }
+        table th { font-weight:700; font-size:12px; text-transform:uppercase; color:var(--text2); }
+        .avatar-preview-3d { width:100%; height:400px; background:#e8e8e8; border-radius:var(--radius2); overflow:hidden; cursor:grab; position:relative; }
+        .avatar-preview-3d canvas { width:100%!important; height:100%!important; }
+        .sidebar-layout { display:flex; gap:20px; }
+        .sidebar-layout .side { width:240px; flex-shrink:0; background:#fff; border-radius:var(--radius2); box-shadow:var(--shadow); padding:12px 0; }
+        .sidebar-layout .side a { display:block; padding:10px 20px; color:var(--text); text-decoration:none; font-weight:500; transition:0.15s; border-left:3px solid transparent; }
+        .sidebar-layout .side a:hover,.sidebar-layout .side a.active { background:#f5f5f5; border-left-color:var(--green); font-weight:700; }
+        .sidebar-layout .main { flex:1; min-width:0; }
+        .bubble-chat { background:#fff; border-radius:16px; padding:8px 14px; display:inline-block; max-width:80%; box-shadow:0 1px 3px rgba(0,0,0,0.1); position:relative; margin:4px 0; }
+        .bubble-chat.self { background:#e3f2fd; float:right; }
+        .notification-badge { position:absolute; top:-4px; right:-4px; background:#e2231a; color:#fff; border-radius:50%; width:18px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:700; }
         @media(max-width:768px) {
-            .sidebar-layout {
-                flex-direction: column;
-            }
-            .sidebar-layout .side {
-                width: 100%;
-                display: flex;
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                gap: 0;
-                padding: 0;
-            }
-            .sidebar-layout .side a {
-                white-space: nowrap;
-                flex-shrink: 0;
-                border-left: none;
-                border-bottom: 3px solid transparent;
-            }
-            .sidebar-layout .side a.active {
-                border-bottom-color: var(--green);
-                border-left-color: transparent;
-            }
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            }
-            .topnav .search {
-                max-width: 200px;
-            }
+            .sidebar-layout { flex-direction:column; }
+            .sidebar-layout .side { width:100%; display:flex; overflow-x:auto; flex-wrap:nowrap; gap:0; padding:0; }
+            .sidebar-layout .side a { white-space:nowrap; flex-shrink:0; border-left:none; border-bottom:3px solid transparent; }
+            .sidebar-layout .side a.active { border-bottom-color:var(--green); border-left-color:transparent; }
+            .grid { grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); }
+            .topnav .search { max-width:200px; }
         }
     </style>
 </head>
 <body>
-    <div id="app"></div>
-    <script>
-        (function() {
-            const FIREBASE_ACTIVE = 'https://mms-blox-default-rtdb.firebaseio.com/';
-            const FIREBASE_ACCOUNTS = 'https://mms-blox-account-data-default-rtdb.firebaseio.com/';
-            const ADMIN_USERNAME = 'MMSBlox';
+<div id="app"></div>
+<script>
+(function() {
+    const FIREBASE_ACTIVE = 'https://mms-blox-default-rtdb.firebaseio.com/';
+    const FIREBASE_ACCOUNTS = 'https://mms-blox-account-data-default-rtdb.firebaseio.com/';
+    const ADMIN_USERNAME = 'MMSBlox';
 
-            function uuid() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                    const r = Math.random() * 16 | 0;
-                    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    function uuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+    function nowISO() { return new Date().toISOString(); }
+    function hash() { return window.location.hash.slice(1) || 'login'; }
+    function navigate(h) { window.location.hash = h; }
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.className = 'toast'; t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3100);
+    }
+    function profanityFilter(text) {
+        const blocked = ['fuck','shit','ass','bitch','damn','crap','dick','piss','slut','whore','bastard','nigga','nigger','faggot','retard','cunt','cock','pussy','douche','wanker','bollocks','arse','twat','bugger','hell','goddamn'];
+        let cleaned = text;
+        blocked.forEach(w => { const rx = new RegExp(w.split('').join('[\\s._\\-]*'), 'gi'); cleaned = cleaned.replace(rx, '###'); });
+        const bypassRx = /([a-zA-Z])\s+([a-zA-Z])\s+([a-zA-Z])\s+([a-zA-Z])/g;
+        if (bypassRx.test(text) && blocked.some(w => text.replace(/\s+/g,'').toLowerCase().includes(w))) {
+            return { filtered: '###', flagged: true };
+        }
+        return { filtered: cleaned, flagged: cleaned.includes('###') };
+    }
+
+    const DB = {
+        _data: {},
+        init() {
+            const d = localStorage.getItem('mmsblox_db');
+            if (d) try { this._data = JSON.parse(d); } catch(e) { this._data = {}; }
+            if (!this._data.users) this._data.users = [];
+            if (!this._data.reports) this._data.reports = [];
+            if (!this._data.catalog) this._data.catalog = this._genCatalog();
+            if (!this._data.experiences) this._data.experiences = this._genExperiences();
+            if (!this._data.groups) this._data.groups = this._genGroups();
+            if (!this._data.messages) this._data.messages = {};
+            if (!this._data.verificationRequests) this._data.verificationRequests = [];
+            this._ensureAdmin();
+            this.save();
+        },
+        _ensureAdmin() {
+            if (!this._data.users.find(u => u.username === ADMIN_USERNAME)) {
+                this._data.users.push({
+                    id: 'admin-001', username: ADMIN_USERNAME, displayName: 'MMSBlox', password: 'admin123',
+                    robuxBalance: 999999, premium: true, verifiedBadge: true, isAdmin: true, isModerator: true,
+                    emailVerified: true, phoneVerified: true, created: '2024-01-01T00:00:00Z',
+                    avatar: { headColor: '#f5cba7', torsoColor: '#2c3e50', legColor: '#1a252f', hat: 'none', face: 'smile' },
+                    friends: [], groups: [],
+                    settings: { privacyMessages: 'Everyone', privacyFollow: 'Everyone', privacyInventory: 'Friends' },
+                    warnings: [], ban: null, twoSVEnabled: false
                 });
             }
-
-            function nowISO() { return new Date().toISOString(); }
-
-            function hash() { return window.location.hash.slice(1) || 'login'; }
-
-            function navigate(h) { window.location.hash = h; }
-
-            function showToast(msg) {
-                const t = document.createElement('div');
-                t.className = 'toast';
-                t.textContent = msg;
-                document.body.appendChild(t);
-                setTimeout(() => t.remove(), 3100);
+        },
+        _genCatalog() {
+            const items = [];
+            const types = ['hat','shirt','pants','face','gear','head','package'];
+            const names = ['Cool Cap','Flame Shirt','Dark Pants','Happy Face','Sword of Light','Dragon Head','Ninja Package','Sparkle Hat','Retro Tee','Camo Pants','Surprised Face','Laser Gun','Robot Head','Pirate Package'];
+            for (let i = 0; i < 40; i++) {
+                items.push({ id:'item-'+i, name:names[i%names.length]+' '+(Math.floor(i/names.length)+1), type:types[i%types.length], price:Math.floor(Math.random()*500)+5, thumbnail:'', creator:'MMSBlox_Catalog', rarity:['Common','Uncommon','Rare','Legendary'][Math.floor(Math.random()*4)] });
             }
+            return items;
+        },
+        _genExperiences() {
+            const exps = [];
+            const names = ['MMS Tycoon','Obby World','MMS Prison','Zombie Survival','Race Track','Building Sim','MMS RPG','Space Explorer','Farming Valley','Battle Arena'];
+            for (let i = 0; i < 20; i++) {
+                exps.push({ id:'exp-'+i, name:names[i%names.length]+(i>=names.length?' '+(Math.floor(i/names.length)+2):''), creator:'User'+Math.floor(Math.random()*1000), plays:Math.floor(Math.random()*1000000), likes:Math.floor(Math.random()*50000), dislikes:Math.floor(Math.random()*5000), genre:['Adventure','Tycoon','RPG','FPS','Racing','Simulator'][Math.floor(Math.random()*6)], thumbnail:'', deleted:false });
+            }
+            return exps;
+        },
+        _genGroups() {
+            const grps = [];
+            // FIX: All strings on one line - this was the syntax error
+            const names = ['MMS Builders','Script Masters','Pixel Artists','Game Devs','MMS Fans','Trading Hub','Roleplay Club','Racing League'];
+            for (let i = 0; i < 8; i++) {
+                grps.push({ id:'group-'+i, name:names[i], owner:'User'+Math.floor(Math.random()*500), members:Math.floor(Math.random()*5000)+10, description:'A great group for MMS Blox enthusiasts!', deleted:false });
+            }
+            return grps;
+        },
+        save() {
+            localStorage.setItem('mmsblox_db', JSON.stringify(this._data));
+            this._syncToFirebase();
+        },
+        async _syncToFirebase() {
+            try {
+                const activeData = { users: this._data.users.map(u => ({ id:u.id, username:u.username, displayName:u.displayName, robuxBalance:u.robuxBalance, premium:u.premium, verifiedBadge:u.verifiedBadge, isAdmin:u.isAdmin, isModerator:u.isModerator, ban:u.ban, avatar:u.avatar, friends:u.friends, groups:u.groups, warnings:u.warnings })) };
+                await fetch(FIREBASE_ACTIVE + 'active_data.json', { method:'PUT', body:JSON.stringify(activeData) });
+                const accountData = { users: this._data.users.map(u => ({ id:u.id, username:u.username, password:u.password, emailVerified:u.emailVerified, phoneVerified:u.phoneVerified, created:u.created, settings:u.settings, twoSVEnabled:u.twoSVEnabled })) };
+                await fetch(FIREBASE_ACCOUNTS + 'account_data.json', { method:'PUT', body:JSON.stringify(accountData) });
+            } catch(e) {}
+        },
+        getUser(id) { return this._data.users.find(u => u.id === id); },
+        getUserByUsername(uname) { return this._data.users.find(u => u.username.toLowerCase() === uname.toLowerCase()); },
+        addUser(user) { this._data.users.push(user); this.save(); },
+        updateUser(id, updates) { const u = this.getUser(id); if (u) { Object.assign(u, updates); this.save(); } },
+        addReport(r) { this._data.reports.push(r); this.save(); },
+        getReports() { return this._data.reports; },
+        updateReport(id, updates) { const r = this._data.reports.find(rp => rp.id === id); if (r) { Object.assign(r, updates); this.save(); } },
+        addVerificationRequest(vr) { this._data.verificationRequests.push(vr); this.save(); },
+        getVerificationRequests() { return this._data.verificationRequests; },
+        updateVerificationRequest(id, updates) { const vr = this._data.verificationRequests.find(v => v.id === id); if (vr) { Object.assign(vr, updates); this.save(); } },
+        getMessages(uid) { return this._data.messages[uid] || []; },
+        addMessage(uid, msg) { if (!this._data.messages[uid]) this._data.messages[uid] = []; this._data.messages[uid].push(msg); this.save(); },
+    };
 
-            function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() =>
-                    fn(...a), ms); }; }
+    const Auth = {
+        sessionUser: null, sessionToken: null,
+        init() {
+            const t = localStorage.getItem('mmsblox_session');
+            if (t) {
+                const s = JSON.parse(t);
+                const u = DB.getUser(s.userId);
+                if (u && !u.ban) { this.sessionUser = u; this.sessionToken = s.token; } else { this.logout(); }
+            }
+        },
+        login(username, password) {
+            const u = DB.getUserByUsername(username);
+            if (!u) return { success:false, error:'Incorrect username or password.' };
+            if (u.ban) {
+                if (!u.ban.banEnd) return { success:false, error:'Your account has been permanently banned. Reason: '+u.ban.reason, banned:true, banInfo:u.ban };
+                if (new Date(u.ban.banEnd) > new Date()) return { success:false, error:'Your account is suspended until '+new Date(u.ban.banEnd).toLocaleDateString()+'. Reason: '+u.ban.reason, banned:true, banInfo:u.ban };
+                u.ban = null; DB.updateUser(u.id, { ban:null });
+            }
+            if (u.password !== password) return { success:false, error:'Incorrect username or password.' };
+            if (u.twoSVEnabled) return { success:false, needs2SV:true, userId:u.id, tempToken:uuid() };
+            const token = uuid();
+            this.sessionUser = u; this.sessionToken = token;
+            localStorage.setItem('mmsblox_session', JSON.stringify({ userId:u.id, token }));
+            return { success:true, user:u, token };
+        },
+        verify2SV(userId, code) {
+            if (code.length === 6) {
+                const u = DB.getUser(userId);
+                if (!u) return { success:false, error:'User not found.' };
+                const token = uuid();
+                this.sessionUser = u; this.sessionToken = token;
+                localStorage.setItem('mmsblox_session', JSON.stringify({ userId:u.id, token }));
+                return { success:true, user:u, token };
+            }
+            return { success:false, error:'Invalid verification code.' };
+        },
+        register(username, password, dob, gender) {
+            if (username.length < 3 || username.length > 20) return { success:false, error:'Username must be 3-20 characters.' };
+            if (!/^[a-zA-Z0-9]+$/.test(username)) return { success:false, error:'Username can only contain letters and numbers.' };
+            if (DB.getUserByUsername(username)) return { success:false, error:'Username is already taken.' };
+            if (password.length < 8) return { success:false, error:'Password must be at least 8 characters.' };
+            if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) return { success:false, error:'Password must include at least one letter and one number.' };
+            const age = Math.floor((new Date() - new Date(dob)) / (365.25*24*60*60*1000));
+            if (age < 13) return { success:false, error:'Users under 13 require parent consent.', under13:true };
+            const user = { id:uuid(), username, displayName:username, password, robuxBalance:10, premium:false, verifiedBadge:false, isAdmin:false, isModerator:false, emailVerified:false, phoneVerified:false, created:nowISO(), dob, gender, avatar:{ headColor:'#f5cba7', torsoColor:'#3498db', legColor:'#2c3e50', hat:'none', face:'smile' }, friends:[], groups:[], settings:{ privacyMessages:'Everyone', privacyFollow:'Everyone', privacyInventory:'Friends' }, warnings:[], ban:null, twoSVEnabled:false };
+            DB.addUser(user);
+            const token = uuid();
+            this.sessionUser = user; this.sessionToken = token;
+            localStorage.setItem('mmsblox_session', JSON.stringify({ userId:user.id, token }));
+            return { success:true, user, token };
+        },
+        logout() { this.sessionUser = null; this.sessionToken = null; localStorage.removeItem('mmsblox_session'); navigate('login'); },
+        isLoggedIn() { return !!this.sessionUser && !this.sessionUser.ban; },
+        isAdmin() { return this.sessionUser && (this.sessionUser.isAdmin || this.sessionUser.username === ADMIN_USERNAME); },
+        isMod() { return this.sessionUser && (this.sessionUser.isModerator || this.isAdmin()); },
+    };
 
-            function profanityFilter(text) {
-                const blocked = ['fuck', 'shit', 'ass', 'bitch', 'damn', 'crap', 'dick', 'piss', 'slut',
-                    'whore', 'bastard', 'nigga', 'nigger', 'faggot', 'retard', 'cunt', 'cock', 'pussy',
-                    'douche', 'wanker', 'bollocks', 'arse', 'twat', 'bugger', 'hell', 'goddamn'
-                ];
-                let cleaned = text;
-                blocked.forEach(w => {
-                    const rx = new RegExp(w.split('').join('[\\s._\\-]*'), 'gi');
-                    cleaned = cleaned.replace(rx, '###');
+    class App {
+        constructor() {
+            this.appEl = document.getElementById('app');
+            this.currentPage = null;
+            window.addEventListener('hashchange', () => this.route());
+            this.route();
+        }
+        route() {
+            const h = hash();
+            if (!Auth.isLoggedIn() && !['login','register'].includes(h) && !h.startsWith('ban')) { navigate('login'); return; }
+            if (Auth.isLoggedIn() && ['login','register'].includes(h)) { navigate('home'); return; }
+            if (Auth.sessionUser && Auth.sessionUser.ban && !h.startsWith('ban')) { navigate('ban'); return; }
+            this.render(h);
+        }
+        render(page) {
+            this.currentPage = page;
+            this.appEl.innerHTML = '';
+            if (Auth.isLoggedIn() && page !== 'login' && page !== 'register' && page !== 'ban') this._renderNav();
+            const main = document.createElement('div');
+            main.className = 'main-content';
+            switch(page) {
+                case 'login': this._renderLogin(main); break;
+                case 'register': this._renderRegister(main); break;
+                case 'ban': this._renderBan(main); break;
+                case 'home': this._renderHome(main); break;
+                case 'discover': this._renderDiscover(main); break;
+                case 'avatar': this._renderAvatar(main); break;
+                case 'create': this._renderCreate(main); break;
+                case 'robux': this._renderRobux(main); break;
+                case 'settings': this._renderSettings(main); break;
+                case 'profile': this._renderProfile(main); break;
+                case 'friends': this._renderFriends(main); break;
+                case 'messages': this._renderMessages(main); break;
+                case 'groups': this._renderGroups(main); break;
+                case 'admin': this._renderAdmin(main); break;
+                case 'moderation': this._renderModeration(main); break;
+                case 'game': this._renderGame(main); break;
+                default: this._renderHome(main);
+            }
+            this.appEl.appendChild(main);
+            if (page === 'avatar') this._initAvatar3D();
+            if (page === 'game') this._initGame3D();
+        }
+        _renderNav() {
+            const nav = document.createElement('nav');
+            nav.className = 'topnav';
+            nav.innerHTML = `
+            <div class="logo" onclick="navigate('home')"><div class="sq">MMS</div><span>MMS Blox</span></div>
+            <div class="search"><span class="sicon">🔍</span><input type="text" placeholder="Search MMS Blox..." id="navSearch"></div>
+            <div class="icons">
+              <span onclick="navigate('messages')" style="position:relative;">✉<span class="notification-badge" id="msgBadge" style="display:none;">0</span></span>
+              <span onclick="navigate('friends')">👥</span>
+              <span onclick="navigate('robux')" style="color:#f7ba2c;font-weight:700;">🪙 ${Auth.sessionUser?.robuxBalance||0}</span>
+              <span onclick="navigate('settings')">⚙</span>
+              <div class="avthumb" onclick="navigate('profile')" title="${Auth.sessionUser?.username||''}">
+                <div style="width:100%;height:100%;background:#e2231a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;">${(Auth.sessionUser?.username||'?')[0].toUpperCase()}</div>
+              </div>
+              ${Auth.isAdmin()?'<span onclick="navigate(\'admin\')" style="color:#e2231a;font-weight:700;" title="Admin Panel">🛡</span>':''}
+              ${Auth.isMod()&&!Auth.isAdmin()?'<span onclick="navigate(\'moderation\')" style="color:#e2231a;" title="Moderation">🛡</span>':''}
+              <span onclick="Auth.logout()" style="color:#ff4d4d;" title="Logout">🚪</span>
+            </div>`;
+            this.appEl.appendChild(nav);
+            setTimeout(() => {
+                const sb = document.getElementById('navSearch');
+                if (sb) sb.addEventListener('keydown', e => { if (e.key==='Enter') navigate('discover?q='+encodeURIComponent(sb.value)); });
+                const u = Auth.sessionUser;
+                if (u) {
+                    const msgs = DB.getMessages(u.id);
+                    const unread = msgs.filter(m => !m.read && m.to === u.id).length;
+                    const mb = document.getElementById('msgBadge');
+                    if (mb && unread > 0) { mb.style.display='flex'; mb.textContent=unread; }
+                }
+            }, 50);
+        }
+        _renderLogin(main) {
+            main.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;';
+            main.innerHTML = `
+            <div style="position:absolute;inset:0;opacity:0.3;">
+              <div style="position:absolute;top:10%;left:10%;width:300px;height:300px;background:#e2231a;border-radius:50%;filter:blur(100px);"></div>
+              <div style="position:absolute;bottom:20%;right:15%;width:250px;height:250px;background:#f7ba2c;border-radius:50%;filter:blur(80px);"></div>
+              <div style="position:absolute;top:50%;right:30%;width:200px;height:200px;background:#00b06f;border-radius:50%;filter:blur(70px);"></div>
+            </div>
+            <div style="position:relative;z-index:1;background:#fff;border-radius:16px;padding:32px;width:400px;max-width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.4);">
+              <div style="text-align:center;margin-bottom:24px;">
+                <div style="width:48px;height:48px;background:#e2231a;border-radius:10px;transform:rotate(5deg);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;">MMS</div>
+                <h2 style="margin-top:8px;font-size:22px;">Welcome to MMS Blox</h2>
+              </div>
+              <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0e0;">
+                <div style="flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:700;border-bottom:2px solid #191b1d;margin-bottom:-2px;" onclick="navigate('login')">Log In</div>
+                <div style="flex:1;text-align:center;padding:10px;cursor:pointer;color:#8c8e92;" onclick="navigate('register')">Sign Up</div>
+              </div>
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Username</label>
+              <input type="text" id="loginUser" placeholder="Enter your username" style="margin-bottom:12px;">
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Password</label>
+              <input type="password" id="loginPass" placeholder="Enter your password" style="margin-bottom:4px;">
+              <div style="text-align:right;margin-bottom:16px;font-size:12px;color:#0059b3;cursor:pointer;">Forgot Password?</div>
+              <button class="btn btn-green" style="width:100%;" id="loginBtn">Log In</button>
+              <div id="loginError" style="color:#ff4d4d;margin-top:8px;font-size:13px;display:none;"></div>
+              <div style="text-align:center;margin-top:16px;font-size:13px;color:#8c8e92;">Don't have an account? <span style="color:#0059b3;cursor:pointer;" onclick="navigate('register')">Sign Up</span></div>
+              <div style="text-align:center;margin-top:12px;font-size:11px;color:#aaa;">Admin demo: username <b>MMSBlox</b> password <b>admin123</b></div>
+            </div>`;
+            setTimeout(() => {
+                const btn = document.getElementById('loginBtn');
+                const errEl = document.getElementById('loginError');
+                if (btn) btn.addEventListener('click', () => {
+                    const u = document.getElementById('loginUser')?.value.trim();
+                    const p = document.getElementById('loginPass')?.value;
+                    if (!u || !p) { if (errEl) { errEl.style.display='block'; errEl.textContent='Please fill in all fields.'; } return; }
+                    const res = Auth.login(u, p);
+                    if (res.success) { navigate('home'); }
+                    else if (res.needs2SV) { this._show2SVModal(res.userId, res.tempToken); }
+                    else if (res.banned) { navigate('ban'); }
+                    else { if (errEl) { errEl.style.display='block'; errEl.textContent=res.error; } }
                 });
-                const bypassRx = /([a-zA-Z])\s+([a-zA-Z])\s+([a-zA-Z])\s+([a-zA-Z])/g;
-                if (bypassRx.test(text) && blocked.some(w => text.replace(/\s+/g, '').toLowerCase()
-                        .includes(w))) {
-                    return { filtered: '###', flagged: true };
-                }
-                return { filtered: cleaned, flagged: cleaned.includes('###') };
-            }
-
-            const DB = {
-                _data: {},
-                init() {
-                    const d = localStorage.getItem('mmsblox_db');
-                    if (d) try { this._data = JSON.parse(d); } catch (e) { this._data = {}; }
-                    if (!this._data.users) this._data.users = [];
-                    if (!this._data.reports) this._data.reports = [];
-                    if (!this._data.catalog) this._data.catalog = this._genCatalog();
-                    if (!this._data.experiences) this._data.experiences = this._genExperiences();
-                    if (!this._data.groups) this._data.groups = this._genGroups();
-                    if (!this._data.messages) this._data.messages = {};
-                    if (!this._data.verificationRequests) this._data.verificationRequests = [];
-                    this._ensureAdmin();
-                    this.save();
-                },
-                _ensureAdmin() {
-                    if (!this._data.users.find(u => u.username === ADMIN_USERNAME)) {
-                        this._data.users.push({
-                            id: 'admin-001',
-                            username: ADMIN_USERNAME,
-                            displayName: 'MMSBlox',
-                            password: 'admin123',
-                            robuxBalance: 999999,
-                            premium: true,
-                            verifiedBadge: true,
-                            isAdmin: true,
-                            isModerator: true,
-                            emailVerified: true,
-                            phoneVerified: true,
-                            created: '2024-01-01T00:00:00Z',
-                            avatar: { headColor: '#f5cba7', torsoColor: '#2c3e50', legColor: '#1a252f',
-                                hat: 'none', face: 'smile' },
-                            friends: [],
-                            groups: [],
-                            settings: { privacyMessages: 'Everyone', privacyFollow: 'Everyone',
-                                privacyInventory: 'Friends' },
-                            warnings: [],
-                            ban: null,
-                            twoSVEnabled: false
-                        });
-                    }
-                },
-                _genCatalog() {
-                    const items = [];
-                    const types = ['hat', 'shirt', 'pants', 'face', 'gear', 'head', 'package'];
-                    const names = ['Cool Cap', 'Flame Shirt', 'Dark Pants', 'Happy Face', 'Sword of Light',
-                        'Dragon Head', 'Ninja Package', 'Sparkle Hat', 'Retro Tee', 'Camo Pants',
-                        'Surprised Face', 'Laser Gun', 'Robot Head', 'Pirate Package'
-                    ];
-                    for (let i = 0; i < 40; i++) {
-                        items.push({
-                            id: 'item-' + i,
-                            name: names[i % names.length] + ' ' + (Math.floor(i / names.length) + 1),
-                            type: types[i % types.length],
-                            price: Math.floor(Math.random() * 500) + 5,
-                            thumbnail: '',
-                            creator: 'MMSBlox_Catalog',
-                            rarity: ['Common', 'Uncommon', 'Rare', 'Legendary'][Math.floor(Math
-                                .random() * 4)]
-                        });
-                    }
-                    return items;
-                },
-                _genExperiences() {
-                    const exps = [];
-                    const names = ['MMS Tycoon', 'Obby World', 'MMS Prison', 'Zombie Survival', 'Race Track',
-                        'Building Sim', 'MMS RPG', 'Space Explorer', 'Farming Valley', 'Battle Arena'
-                    ];
-                    for (let i = 0; i < 20; i++) {
-                        exps.push({
-                            id: 'exp-' + i,
-                            name: names[i % names.length] + (i >= names.length ? ' ' + (Math.floor(i /
-                                names.length) + 2) : ''),
-                            creator: 'User' + Math.floor(Math.random() * 1000),
-                            plays: Math.floor(Math.random() * 1000000),
-                            likes: Math.floor(Math.random() * 50000),
-                            dislikes: Math.floor(Math.random() * 5000),
-                            genre: ['Adventure', 'Tycoon', 'RPG', 'FPS', 'Racing', 'Simulator'][Math.floor(
-                                Math.random() * 6)],
-                            thumbnail: '',
-                            deleted: false
-                        });
-                    }
-                    return exps;
-                },
-                _genGroups() {
-                    const grps = [];
-                    const names = ['MMS Builders', 'Script Masters', 'Pixel Artists', 'Game Devs', 'MMS
-                        Fans ', 'Trading Hub ', 'Roleplay Club ', 'Racing League '];
-                    for (let i = 0; i < 8; i++) {
-                        grps.push({
-                            id: 'group-' + i,
-                            name: names[i],
-                            owner: 'User' + Math.floor(Math.random() * 500),
-                            members: Math.floor(Math.random() * 5000) + 10,
-                            description: 'A great group for MMS Blox enthusiasts!',
-                            deleted: false
-                        });
-                    }
-                    return grps;
-                },
-                save() {
-                    localStorage.setItem('mmsblox_db', JSON.stringify(this._data));
-                    this._syncToFirebase();
-                },
-                async _syncToFirebase() {
-                    try {
-                        const activeData = { users: this._data.users.map(u => ({ id: u.id, username: u
-                                .username, displayName: u.displayName, robuxBalance: u.robuxBalance,
-                                premium: u.premium, verifiedBadge: u.verifiedBadge, isAdmin: u
-                                .isAdmin, isModerator: u.isModerator, ban: u.ban, avatar: u.avatar,
-                                friends: u.friends, groups: u.groups, warnings: u.warnings
-                            })) };
-                        await fetch(FIREBASE_ACTIVE + 'active_data.json', { method: 'PUT', body: JSON
-                                .stringify(activeData) });
-                        const accountData = { users: this._data.users.map(u => ({ id: u.id, username: u
-                                .username, password: u.password, emailVerified: u.emailVerified,
-                                phoneVerified: u.phoneVerified, created: u.created, settings: u
-                                    .settings, twoSVEnabled: u.twoSVEnabled })) };
-                        await fetch(FIREBASE_ACCOUNTS + 'account_data.json', { method: 'PUT', body: JSON
-                                .stringify(accountData) });
-                    } catch (e) { /* silent */ }
-                },
-                getUser(id) { return this._data.users.find(u => u.id === id); },
-                getUserByUsername(uname) { return this._data.users.find(u => u.username.toLowerCase() ===
-                        uname.toLowerCase()); },
-                addUser(user) { this._data.users.push(user);
-                    this.save(); },
-                updateUser(id, updates) {
-                    const u = this.getUser(id);
-                    if (u) { Object.assign(u, updates);
-                        this.save(); }
-                },
-                addReport(r) { this._data.reports.push(r);
-                    this.save(); },
-                getReports() { return this._data.reports; },
-                updateReport(id, updates) {
-                    const r = this._data.reports.find(rp => rp.id === id);
-                    if (r) { Object.assign(r, updates);
-                        this.save(); }
-                },
-                addVerificationRequest(vr) { this._data.verificationRequests.push(vr);
-                    this.save(); },
-                getVerificationRequests() { return this._data.verificationRequests; },
-                updateVerificationRequest(id, updates) {
-                    const vr = this._data.verificationRequests.find(v => v.id === id);
-                    if (vr) { Object.assign(vr, updates);
-                        this.save(); }
-                },
-                getMessages(uid) { return this._data.messages[uid] || []; },
-                addMessage(uid, msg) {
-                    if (!this._data.messages[uid]) this._data.messages[uid] = [];
-                    this._data.messages[uid].push(msg);
-                    this.save();
-                },
-            };
-
-            const Auth = {
-                sessionUser: null,
-                sessionToken: null,
-                init() {
-                    const t = localStorage.getItem('mmsblox_session');
-                    if (t) {
-                        const s = JSON.parse(t);
-                        const u = DB.getUser(s.userId);
-                        if (u && !u.ban) { this.sessionUser = u;
-                            this.sessionToken = s.token; } else { this.logout(); }
-                    }
-                },
-                login(username, password) {
-                    const u = DB.getUserByUsername(username);
-                    if (!u) return { success: false, error: 'Incorrect username or password.' };
-                    if (u.ban) {
-                        if (!u.ban.banEnd) return { success: false, error: 'Your account has been permanently
-                            banned. Reason: ' + u.ban.reason, banned: true, banInfo: u.ban };
-                        if (new Date(u.ban.banEnd) > new Date()) return { success: false, error: 'Your account
-                            is suspended until ' + new Date(u.ban.banEnd).toLocaleDateString() +
-                            '. Reason: ' + u.ban.reason, banned: true, banInfo: u.ban };
-                        u.ban = null;
-                        DB.updateUser(u.id, { ban: null });
-                    }
-                    if (u.password !== password) return { success: false,
-                        error: 'Incorrect username or password.' };
-                    if (u.twoSVEnabled) return { success: false, needs2SV: true, userId: u.id,
-                        tempToken: uuid() };
-                    const token = uuid();
-                    this.sessionUser = u;
-                    this.sessionToken = token;
-                    localStorage.setItem('mmsblox_session', JSON.stringify({ userId: u.id, token }));
-                    return { success: true, user: u, token };
-                },
-                verify2SV(userId, code) {
-                    if (code.length === 6) {
-                        const u = DB.getUser(userId);
-                        if (!u) return { success: false, error: 'User not found.' };
-                        const token = uuid();
-                        this.sessionUser = u;
-                        this.sessionToken = token;
-                        localStorage.setItem('mmsblox_session', JSON.stringify({ userId: u.id, token }));
-                        return { success: true, user: u, token };
-                    }
-                    return { success: false, error: 'Invalid verification code.' };
-                },
-                register(username, password, dob, gender) {
-                    if (username.length < 3 || username.length > 20) return { success: false,
-                        error: 'Username must be 3-20 characters.' };
-                    if (!/^[a-zA-Z0-9]+$/.test(username)) return { success: false,
-                        error: 'Username can only contain letters and numbers.' };
-                    if (DB.getUserByUsername(username)) return { success: false,
-                    error: 'Username is already taken.' };
-                    if (password.length < 8) return { success: false,
-                        error: 'Password must be at least 8 characters.' };
-                    if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) return { success: false,
-                        error: 'Password must include at least one letter and one number.' };
-                    const age = Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000));
-                    if (age < 13) return { success: false,
-                        error: 'Users under 13 require parent consent. Please have a parent create the account.',
-                        under13: true };
-                    const user = {
-                        id: uuid(),
-                        username,
-                        displayName: username,
-                        password,
-                        robuxBalance: 10,
-                        premium: false,
-                        verifiedBadge: false,
-                        isAdmin: false,
-                        isModerator: false,
-                        emailVerified: false,
-                        phoneVerified: false,
-                        created: nowISO(),
-                        dob,
-                        gender,
-                        avatar: { headColor: '#f5cba7', torsoColor: '#3498db', legColor: '#2c3e50',
-                            hat: 'none', face: 'smile' },
-                        friends: [],
-                        groups: [],
-                        settings: { privacyMessages: 'Everyone', privacyFollow: 'Everyone',
-                            privacyInventory: 'Friends' },
-                        warnings: [],
-                        ban: null,
-                        twoSVEnabled: false
-                    };
-                    DB.addUser(user);
-                    const token = uuid();
-                    this.sessionUser = user;
-                    this.sessionToken = token;
-                    localStorage.setItem('mmsblox_session', JSON.stringify({ userId: user.id, token }));
-                    return { success: true, user, token, under13: age < 13 };
-                },
-                logout() {
-                    this.sessionUser = null;
-                    this.sessionToken = null;
-                    localStorage.removeItem('mmsblox_session');
-                    navigate('login');
-                },
-                isLoggedIn() { return !!this.sessionUser && !this.sessionUser.ban; },
-                isAdmin() { return this.sessionUser && (this.sessionUser.isAdmin || this.sessionUser
-                        .username === ADMIN_USERNAME); },
-                isMod() { return this.sessionUser && (this.sessionUser.isModerator || this.isAdmin()); },
-            };
-
-            class App {
-                constructor() {
-                    this.appEl = document.getElementById('app');
-                    this.currentPage = null;
-                    this._modal = null;
-                    window.addEventListener('hashchange', () => this.route());
-                    this.route();
-                }
-                route() {
-                    const h = hash();
-                    if (!Auth.isLoggedIn() && !['login', 'register'].includes(h) && !h.startsWith('ban')) {
-                        navigate('login');
-                        return;
-                    }
-                    if (Auth.isLoggedIn() && ['login', 'register'].includes(h)) {
-                        navigate('home');
-                        return;
-                    }
-                    if (Auth.sessionUser && Auth.sessionUser.ban && !h.startsWith('ban')) {
-                        navigate('ban');
-                        return;
-                    }
-                    this.render(h);
-                }
-                render(page) {
-                    this.currentPage = page;
-                    this.appEl.innerHTML = '';
-                    if (Auth.isLoggedIn() && page !== 'login' && page !== 'register' && page !== 'ban') {
-                        this._renderNav();
-                    }
-                    const main = document.createElement('div');
-                    main.className = 'main-content';
-                    switch (page) {
-                        case 'login':
-                            this._renderLogin(main);
-                            break;
-                        case 'register':
-                            this._renderRegister(main);
-                            break;
-                        case 'ban':
-                            this._renderBan(main);
-                            break;
-                        case 'home':
-                            this._renderHome(main);
-                            break;
-                        case 'discover':
-                            this._renderDiscover(main);
-                            break;
-                        case 'avatar':
-                            this._renderAvatar(main);
-                            break;
-                        case 'create':
-                            this._renderCreate(main);
-                            break;
-                        case 'robux':
-                            this._renderRobux(main);
-                            break;
-                        case 'settings':
-                            this._renderSettings(main);
-                            break;
-                        case 'profile':
-                            this._renderProfile(main);
-                            break;
-                        case 'friends':
-                            this._renderFriends(main);
-                            break;
-                        case 'messages':
-                            this._renderMessages(main);
-                            break;
-                        case 'groups':
-                            this._renderGroups(main);
-                            break;
-                        case 'admin':
-                            this._renderAdmin(main);
-                            break;
-                        case 'moderation':
-                            this._renderModeration(main);
-                            break;
-                        case 'game':
-                            this._renderGame(main);
-                            break;
-                        default:
-                            this._renderHome(main);
-                    }
-                    this.appEl.appendChild(main);
-                    if (page === 'avatar') this._initAvatar3D();
-                    if (page === 'game') this._initGame3D();
-                }
-                _renderNav() {
-                    const nav = document.createElement('nav');
-                    nav.className = 'topnav';
-                    nav.innerHTML = `
-                <div class="logo" onclick="navigate('home')"><div class="sq">MMS</div><span>MMS Blox</span></div>
-                <div class="search"><span class="sicon">🔍</span><input type="text" placeholder="Search MMS Blox..." id="navSearch"></div>
-                <div class="icons">
-                  <span onclick="navigate('messages')" style="position:relative;">✉<span class="notification-badge" id="msgBadge" style="display:none;">0</span></span>
-                  <span onclick="navigate('friends')">👥</span>
-                  <span onclick="navigate('robux')" style="color:#f7ba2c;font-weight:700;">🪙 ${Auth.sessionUser?.robuxBalance||0}</span>
-                  <span onclick="navigate('settings')">⚙</span>
-                  <div class="avthumb" onclick="navigate('profile')" title="${Auth.sessionUser?.username||''}">
-                    <div style="width:100%;height:100%;background:#e2231a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;">${(Auth.sessionUser?.username||'?')[0].toUpperCase()}</div>
-                  </div>
-                  ${Auth.isAdmin()?'<span onclick="navigate(\'admin\')" style="color:#e2231a;font-weight:700;" title="Admin Panel">🛡</span>':''}
-                  ${Auth.isMod()&&!Auth.isAdmin()?'<span onclick="navigate(\'moderation\')" style="color:#e2231a;" title="Moderation">🛡</span>':''}
-                  <span onclick="Auth.logout()" style="color:#ff4d4d;" title="Logout">🚪</span>
-                </div>`;
-                    this.appEl.appendChild(nav);
-                    setTimeout(() => {
-                        const sb = document.getElementById('navSearch');
-                        if (sb) sb.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(
-                                'discover?q=' + encodeURIComponent(sb.value)); });
-                        const u = Auth.sessionUser;
-                        if (u) {
-                            const msgs = DB.getMessages(u.id);
-                            const unread = msgs.filter(m => !m.read && m.to === u.id).length;
-                            const mb = document.getElementById('msgBadge');
-                            if (mb && unread > 0) { mb.style.display = 'flex';
-                                mb.textContent = unread; }
-                        }
-                    }, 50);
-                }
-                _renderLogin(main) {
-                    main.style.cssText =
-                        'display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;';
-                    main.innerHTML = `
-                <div style="position:absolute;inset:0;opacity:0.3;">
-                  <div style="position:absolute;top:10%;left:10%;width:300px;height:300px;background:#e2231a;border-radius:50%;filter:blur(100px);"></div>
-                  <div style="position:absolute;bottom:20%;right:15%;width:250px;height:250px;background:#f7ba2c;border-radius:50%;filter:blur(80px);"></div>
-                  <div style="position:absolute;top:50%;right:30%;width:200px;height:200px;background:#00b06f;border-radius:50%;filter:blur(70px);"></div>
+                document.getElementById('loginPass')?.addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('loginBtn')?.click(); });
+            }, 100);
+        }
+        _show2SVModal(userId, tempToken) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.innerHTML = `
+            <div class="modal">
+              <h3>Two-Step Verification</h3>
+              <p style="margin-bottom:12px;">Enter the 6-digit code from your authenticator app.</p>
+              <input type="text" id="svCode" placeholder="000000" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:8px;">
+              <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end;">
+                <button class="btn btn-white btn-sm" id="svCancel">Cancel</button>
+                <button class="btn btn-green btn-sm" id="svSubmit">Verify</button>
+              </div>
+              <div id="svError" style="color:#ff4d4d;margin-top:8px;font-size:13px;display:none;"></div>
+            </div>`;
+            document.body.appendChild(overlay);
+            overlay.querySelector('#svCancel').addEventListener('click', () => overlay.remove());
+            overlay.querySelector('#svSubmit').addEventListener('click', () => {
+                const code = overlay.querySelector('#svCode').value;
+                const res = Auth.verify2SV(userId, code);
+                if (res.success) { overlay.remove(); navigate('home'); }
+                else { overlay.querySelector('#svError').style.display='block'; overlay.querySelector('#svError').textContent=res.error; }
+            });
+        }
+        _renderRegister(main) {
+            main.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;';
+            main.innerHTML = `
+            <div style="position:absolute;inset:0;opacity:0.3;">
+              <div style="position:absolute;top:10%;left:10%;width:300px;height:300px;background:#e2231a;border-radius:50%;filter:blur(100px);"></div>
+              <div style="position:absolute;bottom:20%;right:15%;width:250px;height:250px;background:#f7ba2c;border-radius:50%;filter:blur(80px);"></div>
+            </div>
+            <div style="position:relative;z-index:1;background:#fff;border-radius:16px;padding:32px;width:440px;max-width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.4);max-height:90vh;overflow-y:auto;">
+              <div style="text-align:center;margin-bottom:20px;">
+                <div style="width:48px;height:48px;background:#e2231a;border-radius:10px;transform:rotate(5deg);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;">MMS</div>
+                <h2 style="margin-top:8px;">Create Account</h2>
+              </div>
+              <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0e0;">
+                <div style="flex:1;text-align:center;padding:10px;cursor:pointer;color:#8c8e92;" onclick="navigate('login')">Log In</div>
+                <div style="flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:700;border-bottom:2px solid #191b1d;margin-bottom:-2px;" onclick="navigate('register')">Sign Up</div>
+              </div>
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Username</label>
+              <input type="text" id="regUser" placeholder="3-20 characters, letters & numbers" style="margin-bottom:10px;">
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Password</label>
+              <input type="password" id="regPass" placeholder="Min 8 chars, 1 letter & 1 number" style="margin-bottom:10px;">
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Confirm Password</label>
+              <input type="password" id="regPass2" placeholder="Re-enter password" style="margin-bottom:10px;">
+              <label style="font-weight:600;display:block;margin-bottom:4px;">Date of Birth</label>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <select id="regMonth"><option value="">Month</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}">${new Date(0,i).toLocaleString('default',{month:'long'})}</option>`).join('')}</select>
+                <select id="regDay"><option value="">Day</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select>
+                <select id="regYear"><option value="">Year</option>${Array.from({length:60},(_,i)=>`<option value="${2025-i}">${2025-i}</option>`).join('')}</select>
+              </div>
+              <button class="btn btn-green" style="width:100%;margin-bottom:10px;" id="regBtn">Sign Up</button>
+              <div id="regError" style="color:#ff4d4d;font-size:13px;display:none;"></div>
+              <div style="font-size:11px;color:#8c8e92;text-align:center;margin-top:8px;">By signing up you agree to our Terms of Service and Privacy Policy.</div>
+            </div>`;
+            setTimeout(() => {
+                document.getElementById('regBtn')?.addEventListener('click', () => {
+                    const u = document.getElementById('regUser')?.value.trim();
+                    const p = document.getElementById('regPass')?.value;
+                    const p2 = document.getElementById('regPass2')?.value;
+                    const m = document.getElementById('regMonth')?.value;
+                    const d = document.getElementById('regDay')?.value;
+                    const y = document.getElementById('regYear')?.value;
+                    const errEl = document.getElementById('regError');
+                    if (!u||!p||!p2||!m||!d||!y) { if (errEl) { errEl.style.display='block'; errEl.textContent='Please fill in all required fields.'; } return; }
+                    if (p !== p2) { if (errEl) { errEl.style.display='block'; errEl.textContent='Passwords do not match.'; } return; }
+                    const dob = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+                    const res = Auth.register(u, p, dob, '');
+                    if (res.success) { navigate('home'); }
+                    else { if (errEl) { errEl.style.display='block'; errEl.textContent=res.error; } }
+                });
+            }, 100);
+        }
+        _renderBan(main) {
+            const u = Auth.sessionUser;
+            const ban = u?.ban || { reason:'Unknown', banEnd:null };
+            main.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;background:#191b1d;';
+            main.innerHTML = `
+            <div style="background:#fff;border-radius:16px;padding:40px;text-align:center;max-width:500px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+              <div style="font-size:64px;">😢</div>
+              <h2 style="color:#e2231a;margin:16px 0;">Account Suspended</h2>
+              <p style="font-size:16px;margin-bottom:8px;"><strong>Reason:</strong> ${ban.reason||'Violation of Terms of Service'}</p>
+              <p style="font-size:14px;color:#8c8e92;">${ban.banEnd?'Unban date: '+new Date(ban.banEnd).toLocaleDateString():'This ban is permanent.'}</p>
+              <p style="font-size:13px;color:#8c8e92;margin-top:12px;">If you believe this is a mistake, you may submit an appeal.</p>
+              <button class="btn btn-white" style="margin-top:16px;" onclick="alert('Appeal submitted. Moderators will review your case.')">Appeal Ban</button>
+              <button class="btn btn-red" style="margin-top:8px;display:block;width:100%;" onclick="Auth.logout()">Log Out</button>
+            </div>`;
+        }
+        _renderHome(main) {
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
+              <h3 style="margin-bottom:12px;">Featured Experiences</h3>
+              <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;">
+                ${DB._data.experiences.slice(0,6).map(e=>`
+                  <div class="game-card" style="min-width:280px;flex-shrink:0;" onclick="navigate('game?id=${e.id}')">
+                    <div class="thumb" style="background:linear-gradient(135deg,#e74c3c,#c0392b);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
+                    <div class="info"><div class="title">${e.name}</div><div class="meta">👤 ${e.creator} · ▶ ${e.plays.toLocaleString()}</div></div>
+                  </div>`).join('')}
+              </div>
+              <h3 style="margin:16px 0 12px;">Recommended For You</h3>
+              <div class="grid">
+                ${DB._data.experiences.slice(6,14).map(e=>`
+                  <div class="game-card" onclick="navigate('game?id=${e.id}')">
+                    <div class="thumb" style="background:linear-gradient(135deg,#2c3e50,#34495e);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
+                    <div class="info"><div class="title">${e.name}</div><div class="meta">👍 ${(e.likes/(e.likes+e.dislikes)*100).toFixed(0)}% · ▶ ${e.plays.toLocaleString()}</div></div>
+                  </div>`).join('')}
+              </div>
+              <h3 style="margin:16px 0 12px;">Popular</h3>
+              <div class="grid">
+                ${DB._data.experiences.slice(14,20).map(e=>`
+                  <div class="game-card" onclick="navigate('game?id=${e.id}')">
+                    <div class="thumb" style="background:linear-gradient(135deg,#e67e22,#f39c12);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
+                    <div class="info"><div class="title">${e.name}</div><div class="meta">🔥 ${e.plays.toLocaleString()} plays</div></div>
+                  </div>`).join('')}
+              </div>
+            </div>`;
+        }
+        _renderDiscover(main) {
+            const q = new URLSearchParams(window.location.hash.split('?')[1]||'').get('q')||'';
+            const filtered = q ? DB._data.experiences.filter(e=>e.name.toLowerCase().includes(q.toLowerCase())&&!e.deleted) : DB._data.experiences.filter(e=>!e.deleted);
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
+              <h2>Discover Experiences</h2>
+              <div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;">
+                <select style="width:auto;padding:8px 12px;"><option>Relevance</option><option>Popular</option><option>Top Rated</option></select>
+                <select style="width:auto;padding:8px 12px;"><option>All Genres</option><option>Adventure</option><option>Tycoon</option><option>RPG</option><option>FPS</option><option>Racing</option><option>Simulator</option></select>
+                ${q?`<span style="padding:8px 12px;background:#e8e8e8;border-radius:16px;">Search: "${q}" <span style="cursor:pointer;color:#e2231a;" onclick="navigate('discover')">✕</span></span>`:''}
+              </div>
+              <div class="grid">
+                ${filtered.map(e=>`
+                  <div class="game-card" onclick="navigate('game?id=${e.id}')">
+                    <div class="thumb" style="background:linear-gradient(135deg,#555,#777);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
+                    <div class="info"><div class="title">${e.name}</div><div class="meta"><span class="tag">${e.genre}</span> · ▶ ${e.plays.toLocaleString()}</div></div>
+                  </div>`).join('')}
+              </div>
+            </div>`;
+        }
+        _renderAvatar(main) {
+            const u = Auth.sessionUser;
+            const av = u?.avatar || { headColor:'#f5cba7', torsoColor:'#3498db', legColor:'#2c3e50', hat:'none', face:'smile' };
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
+              <div class="sidebar-layout">
+                <div class="side">
+                  <a class="active">Recent</a><a>Clothing</a><a>Body</a><a>Animations</a><a>Costumes</a>
                 </div>
-                <div style="position:relative;z-index:1;background:#fff;border-radius:16px;padding:32px;width:400px;max-width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.4);">
-                  <div style="text-align:center;margin-bottom:24px;">
-                    <div style="width:48px;height:48px;background:#e2231a;border-radius:10px;transform:rotate(5deg);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;">MMS</div>
-                    <h2 style="margin-top:8px;font-size:22px;">Welcome to MMS Blox</h2>
-                  </div>
-                  <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0e0;">
-                    <div class="tab-nav-tab" style="flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:700;border-bottom:2px solid #191b1d;margin-bottom:-2px;" onclick="navigate('login')">Log In</div>
-                    <div style="flex:1;text-align:center;padding:10px;cursor:pointer;color:#8c8e92;" onclick="navigate('register')">Sign Up</div>
-                  </div>
-                  <div id="loginForm">
-                    <label style="font-weight:600;display:block;margin-bottom:4px;">Username</label>
-                    <input type="text" id="loginUser" placeholder="Enter your username" style="margin-bottom:12px;">
-                    <label style="font-weight:600;display:block;margin-bottom:4px;">Password</label>
-                    <input type="password" id="loginPass" placeholder="Enter your password" style="margin-bottom:4px;">
-                    <div style="text-align:right;margin-bottom:16px;font-size:12px;color:#0059b3;cursor:pointer;">Forgot Password?</div>
-                    <button class="btn btn-green" style="width:100%;" id="loginBtn">Log In</button>
-                    <div id="loginError" style="color:#ff4d4d;margin-top:8px;font-size:13px;display:none;"></div>
-                  </div>
-                  <div style="text-align:center;margin-top:16px;font-size:13px;color:#8c8e92;">Don't have an account? <span style="color:#0059b3;cursor:pointer;" onclick="navigate('register')">Sign Up</span></div>
-                  <div style="text-align:center;margin-top:12px;font-size:11px;color:#aaa;">Admin demo: username <b>MMSBlox</b> password <b>admin123</b></div>
-                </div>`;
-                    setTimeout(() => {
-                        const btn = document.getElementById('loginBtn');
-                        const errEl = document.getElementById('loginError');
-                        if (btn) btn.addEventListener('click', () => {
-                            const u = document.getElementById('loginUser')?.value.trim();
-                            const p = document.getElementById('loginPass')?.value;
-                            if (!u || !p) { if (errEl) { errEl.style.display = 'block';
-                                    errEl.textContent = 'Please fill in all fields.'; } return; }
-                            const res = Auth.login(u, p);
-                            if (res.success) { navigate('home'); } else if (res.needs2SV) {
-                                this._show2SVModal(res.userId, res.tempToken); } else if (res
-                                .banned) { navigate('ban'); } else { if (errEl) { errEl.style
-                                        .display = 'block';
-                                    errEl.textContent = res.error; } }
-                        });
-                        document.getElementById('loginPass')?.addEventListener('keydown', e => { if (e
-                                .key === 'Enter') document.getElementById('loginBtn')
-                            ?.click(); });
-                    }, 100);
-                }
-                _show2SVModal(userId, tempToken) {
-                    const overlay = document.createElement('div');
-                    overlay.className = 'modal-overlay';
-                    overlay.innerHTML = `
-                <div class="modal">
-                  <h3>Two-Step Verification</h3>
-                  <p style="margin-bottom:12px;">Enter the 6-digit code from your authenticator app.</p>
-                  <input type="text" id="svCode" placeholder="000000" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:8px;">
-                  <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end;">
-                    <button class="btn btn-white btn-sm" id="svCancel">Cancel</button>
-                    <button class="btn btn-green btn-sm" id="svSubmit">Verify</button>
-                  </div>
-                  <div id="svError" style="color:#ff4d4d;margin-top:8px;font-size:13px;display:none;"></div>
-                </div>`;
-                    document.body.appendChild(overlay);
-                    overlay.querySelector('#svCancel').addEventListener('click', () => overlay.remove());
-                    overlay.querySelector('#svSubmit').addEventListener('click', () => {
-                        const code = overlay.querySelector('#svCode').value;
-                        const res = Auth.verify2SV(userId, code);
-                        if (res.success) { overlay.remove();
-                            navigate('home'); } else {
-                            overlay.querySelector('#svError').style.display = 'block';
-                            overlay.querySelector('#svError').textContent = res.error;
-                        }
-                    });
-                }
-                _renderRegister(main) {
-                    main.style.cssText =
-                        'display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;';
-                    main.innerHTML = `
-                <div style="position:absolute;inset:0;opacity:0.3;">
-                  <div style="position:absolute;top:10%;left:10%;width:300px;height:300px;background:#e2231a;border-radius:50%;filter:blur(100px);"></div>
-                  <div style="position:absolute;bottom:20%;right:15%;width:250px;height:250px;background:#f7ba2c;border-radius:50%;filter:blur(80px);"></div>
-                </div>
-                <div style="position:relative;z-index:1;background:#fff;border-radius:16px;padding:32px;width:440px;max-width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.4);max-height:90vh;overflow-y:auto;">
-                  <div style="text-align:center;margin-bottom:20px;">
-                    <div style="width:48px;height:48px;background:#e2231a;border-radius:10px;transform:rotate(5deg);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;">MMS</div>
-                    <h2 style="margin-top:8px;">Create Account</h2>
-                  </div>
-                  <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0e0;">
-                    <div style="flex:1;text-align:center;padding:10px;cursor:pointer;color:#8c8e92;" onclick="navigate('login')">Log In</div>
-                    <div class="tab-nav-tab" style="flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:700;border-bottom:2px solid #191b1d;margin-bottom:-2px;" onclick="navigate('register')">Sign Up</div>
-                  </div>
-                  <label style="font-weight:600;display:block;margin-bottom:4px;">Username</label>
-                  <input type="text" id="regUser" placeholder="3-20 characters, letters & numbers" style="margin-bottom:10px;">
-                  <label style="font-weight:600;display:block;margin-bottom:4px;">Password</label>
-                  <input type="password" id="regPass" placeholder="Min 8 chars, 1 letter & 1 number" style="margin-bottom:10px;">
-                  <label style="font-weight:600;display:block;margin-bottom:4px;">Confirm Password</label>
-                  <input type="password" id="regPass2" placeholder="Re-enter password" style="margin-bottom:10px;">
-                  <label style="font-weight:600;display:block;margin-bottom:4px;">Date of Birth</label>
-                  <div style="display:flex;gap:8px;margin-bottom:10px;">
-                    <select id="regMonth"><option value="">Month</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}">${new Date(0,i).toLocaleString('default',{month:'long'})}</option>`).join('')}</select>
-                    <select id="regDay"><option value="">Day</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select>
-                    <select id="regYear"><option value="">Year</option>${Array.from({length:60},(_,i)=>`<option value="${2025-i}">${2025-i}</option>`).join('')}</select>
-                  </div>
-                  <button class="btn btn-green" style="width:100%;margin-bottom:10px;" id="regBtn">Sign Up</button>
-                  <div id="regError" style="color:#ff4d4d;font-size:13px;display:none;"></div>
-                  <div style="font-size:11px;color:#8c8e92;text-align:center;margin-top:8px;">By signing up you agree to our Terms of Service and Privacy Policy.</div>
-                </div>`;
-                    setTimeout(() => {
-                        document.getElementById('regBtn')?.addEventListener('click', () => {
-                            const u = document.getElementById('regUser')?.value.trim();
-                            const p = document.getElementById('regPass')?.value;
-                            const p2 = document.getElementById('regPass2')?.value;
-                            const m = document.getElementById('regMonth')?.value;
-                            const d = document.getElementById('regDay')?.value;
-                            const y = document.getElementById('regYear')?.value;
-                            const errEl = document.getElementById('regError');
-                            if (!u || !p || !p2 || !m || !d || !y) { if (errEl) { errEl.style
-                                    .display = 'block';
-                                    errEl.textContent =
-                                    'Please fill in all required fields.'; } return; }
-                            if (p !== p2) { if (errEl) { errEl.style.display = 'block';
-                                    errEl.textContent = 'Passwords do not match.'; } return; }
-                            const dob = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-                            const res = Auth.register(u, p, dob, '');
-                            if (res.success) { if (res.under13) { showToast(
-                                    'Account created. Parent consent may be required for some features.'
-                                    ); }
-                                navigate('home'); } else { if (errEl) { errEl.style.display =
-                                        'block';
-                                    errEl.textContent = res.error; } }
-                        });
-                    }, 100);
-                }
-                _renderBan(main) {
-                    const u = Auth.sessionUser;
-                    const ban = u?.ban || { reason: 'Unknown', banEnd: null };
-                    main.style.cssText =
-                        'display:flex;align-items:center;justify-content:center;min-height:100vh;background:#191b1d;';
-                    main.innerHTML = `
-                <div style="background:#fff;border-radius:16px;padding:40px;text-align:center;max-width:500px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-                  <div style="font-size:64px;">😢</div>
-                  <h2 style="color:#e2231a;margin:16px 0;">Account Suspended</h2>
-                  <p style="font-size:16px;margin-bottom:8px;"><strong>Reason:</strong> ${ban.reason||'Violation of Terms of Service'}</p>
-                  <p style="font-size:14px;color:#8c8e92;">${ban.banEnd?'Unban date: '+new Date(ban.banEnd).toLocaleDateString():'This ban is permanent.'}</p>
-                  <p style="font-size:13px;color:#8c8e92;margin-top:12px;">If you believe this is a mistake, you may submit an appeal.</p>
-                  <button class="btn btn-white" style="margin-top:16px;" onclick="alert('Appeal submitted. Moderators will review your case.')">Appeal Ban</button>
-                  <button class="btn btn-red" style="margin-top:8px;display:block;width:100%;" onclick="Auth.logout()">Log Out</button>
-                </div>`;
-                }
-                _renderHome(main) {
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
-                  <h3 style="margin-bottom:12px;">Featured Experiences</h3>
-                  <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;" id="featuredCarousel">
-                    ${DB._data.experiences.slice(0,6).map(e=>`
-                      <div class="game-card" style="min-width:280px;flex-shrink:0;" onclick="navigate('game?id=${e.id}')">
-                        <div class="thumb" style="background:linear-gradient(135deg,${['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c'][Math.floor(Math.random()*6)]},${['#c0392b','#2980b9','#27ae60','#e67e22','#8e44ad','#16a085'][Math.floor(Math.random()*6)]});">
-                          <div class="play-overlay"><div class="play-btn">▶</div></div>
-                        </div>
-                        <div class="info"><div class="title">${e.name}</div><div class="meta">👤 ${e.creator} · ▶ ${e.plays.toLocaleString()}</div></div>
-                      </div>`).join('')}
-                  </div>
-                  <h3 style="margin:16px 0 12px;">Recommended For You</h3>
-                  <div class="grid" id="recGrid">
-                    ${DB._data.experiences.slice(6,14).map(e=>`
-                      <div class="game-card" onclick="navigate('game?id=${e.id}')">
-                        <div class="thumb" style="background:linear-gradient(135deg,#2c3e50,#34495e);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
-                        <div class="info"><div class="title">${e.name}</div><div class="meta">👍 ${(e.likes/(e.likes+e.dislikes)*100).toFixed(0)}% · ▶ ${e.plays.toLocaleString()}</div></div>
-                      </div>`).join('')}
-                  </div>
-                  <h3 style="margin:16px 0 12px;">Popular</h3>
-                  <div class="grid">
-                    ${DB._data.experiences.slice(14,20).map(e=>`
-                      <div class="game-card" onclick="navigate('game?id=${e.id}')">
-                        <div class="thumb" style="background:linear-gradient(135deg,#e67e22,#f39c12);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
-                        <div class="info"><div class="title">${e.name}</div><div class="meta">🔥 ${e.plays.toLocaleString()} plays</div></div>
-                      </div>`).join('')}
-                  </div>
-                </div>`;
-                }
-                _renderDiscover(main) {
-                    const q = new URLSearchParams(window.location.hash.split('?')[1] || '').get('q') || '';
-                    const filtered = q ? DB._data.experiences.filter(e => e.name.toLowerCase().includes(q
-                        .toLowerCase()) && !e.deleted) : DB._data.experiences.filter(e => !e.deleted);
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
-                  <h2>Discover Experiences</h2>
-                  <div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;">
-                    <select style="width:auto;padding:8px 12px;"><option>Relevance</option><option>Popular</option><option>Top Rated</option><option>Most Engaging</option></select>
-                    <select style="width:auto;padding:8px 12px;"><option>All Genres</option><option>Adventure</option><option>Tycoon</option><option>RPG</option><option>FPS</option><option>Racing</option><option>Simulator</option></select>
-                    ${q?`<span style="padding:8px 12px;background:#e8e8e8;border-radius:16px;">Search: "${q}" <span style="cursor:pointer;color:#e2231a;" onclick="navigate('discover')">✕</span></span>`:''}
-                  </div>
-                  <div class="grid">
-                    ${filtered.map(e=>`
-                      <div class="game-card" onclick="navigate('game?id=${e.id}')">
-                        <div class="thumb" style="background:linear-gradient(135deg,#555,#777);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
-                        <div class="info"><div class="title">${e.name}</div><div class="meta"><span class="tag">${e.genre}</span> · ▶ ${e.plays.toLocaleString()}</div></div>
-                      </div>`).join('')}
-                  </div>
-                </div>`;
-                }
-                _renderAvatar(main) {
-                    const u = Auth.sessionUser;
-                    const av = u?.avatar || { headColor: '#f5cba7', torsoColor: '#3498db',
-                    legColor: '#2c3e50', hat: 'none', face: 'smile' };
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
-                  <div class="sidebar-layout">
-                    <div class="side">
-                      <a class="active" onclick="document.querySelectorAll('.side a').forEach(a=>a.classList.remove('active'));this.classList.add('active');">Recent</a>
-                      <a onclick="document.querySelectorAll('.side a').forEach(a=>a.classList.remove('active'));this.classList.add('active');">Clothing</a>
-                      <a onclick="document.querySelectorAll('.side a').forEach(a=>a.classList.remove('active'));this.classList.add('active');">Body</a>
-                      <a onclick="document.querySelectorAll('.side a').forEach(a=>a.classList.remove('active'));this.classList.add('active');">Animations</a>
-                      <a onclick="document.querySelectorAll('.side a').forEach(a=>a.classList.remove('active'));this.classList.add('active');">Costumes</a>
-                    </div>
-                    <div class="main">
-                      <div class="card">
-                        <div class="avatar-preview-3d" id="avatar3DContainer"></div>
-                        <div style="text-align:center;margin-top:8px;font-size:12px;color:#8c8e92;">🖱 Drag to rotate · Scroll to zoom</div>
-                      </div>
-                      <div class="card">
-                        <h3>Body Colors</h3>
-                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                          <div><label>Head</label><input type="color" id="headColor" value="${av.headColor}" onchange="App.instance._updateAvatarColor('headColor',this.value)"></div>
-                          <div><label>Torso</label><input type="color" id="torsoColor" value="${av.torsoColor}" onchange="App.instance._updateAvatarColor('torsoColor',this.value)"></div>
-                          <div><label>Legs</label><input type="color" id="legColor" value="${av.legColor}" onchange="App.instance._updateAvatarColor('legColor',this.value)"></div>
-                        </div>
-                      </div>
-                      <div class="card">
-                        <h3>Equipped Items</h3>
-                        <p style="color:#8c8e92;">Hat: ${av.hat==='none'?'None':'🧢 '+av.hat} | Face: 😊 ${av.face}</p>
-                        <button class="btn btn-white btn-sm" onclick="navigate('discover')">Browse Catalog</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>`;
-                    this._avatarColors = { headColor: av.headColor, torsoColor: av.torsoColor, legColor: av
-                            .legColor };
-                }
-                _updateAvatarColor(prop, val) {
-                    if (!this._avatarColors) this._avatarColors = {};
-                    this._avatarColors[prop] = val;
-                    if (Auth.sessionUser) {
-                        if (!Auth.sessionUser.avatar) Auth.sessionUser.avatar = {};
-                        Auth.sessionUser.avatar[prop] = val;
-                        DB.updateUser(Auth.sessionUser.id, { avatar: Auth.sessionUser.avatar });
-                    }
-                    this._initAvatar3D();
-                }
-                _initAvatar3D() {
-                    const container = document.getElementById('avatar3DContainer');
-                    if (!container || !window.THREE) return;
-                    container.innerHTML = '';
-                    const w = container.clientWidth;
-                    const h = container.clientHeight || 400;
-                    const scene = new THREE.Scene();
-                    scene.background = new THREE.Color(0xe8e8e8);
-                    const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
-                    camera.position.set(4, 3, 6);
-                    camera.lookAt(0, 1.2, 0);
-                    const renderer = new THREE.WebGLRenderer({ antialias: true });
-                    renderer.setSize(w, h);
-                    renderer.shadowMap.enabled = true;
-                    container.appendChild(renderer.domElement);
-                    const light = new THREE.DirectionalLight(0xffffff, 1);
-                    light.position.set(5, 10, 5);
-                    light.castShadow = true;
-                    scene.add(light);
-                    scene.add(new THREE.AmbientLight(0x404040));
-                    const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE
-                .MeshStandardMaterial({ color: 0xcccccc }));
-                    floor.rotation.x = -Math.PI / 2;
-                    floor.receiveShadow = true;
-                    scene.add(floor);
-                    const group = new THREE.Group();
-                    const hc = this._avatarColors?.headColor || '#f5cba7';
-                    const tc = this._avatarColors?.torsoColor || '#3498db';
-                    const lc = this._avatarColors?.legColor || '#2c3e50';
-                    const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5, 4, 4, 4);
-                    for (let v of headGeo.attributes.position.array) {
-                        const x = v;
-                        const y = v;
-                        const z = v;
-                        const d = Math.sqrt(x * x + y * y + z * z) / 0.35;
-                        if (d > 1) { const s = 1 / d;
-                            headGeo.attributes.position.setXYZ(headGeo.attributes.position.getX, headGeo
-                                .attributes.position.getY, headGeo.attributes.position.getZ); }
-                    }
-                    const head = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.5, 0.45), new THREE
-                        .MeshStandardMaterial({ color: hc, roughness: 0.6 }));
-                    head.position.y = 2.45;
-                    head.castShadow = true;
-                    group.add(head);
-                    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.7, 0.3), new THREE
-                        .MeshStandardMaterial({ color: tc, roughness: 0.5 }));
-                    torso.position.y = 1.7;
-                    torso.castShadow = true;
-                    group.add(torso);
-                    const armL = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.55, 0.2), new THREE
-                        .MeshStandardMaterial({ color: tc, roughness: 0.5 }));
-                    armL.position.set(-0.45, 1.75, 0);
-                    armL.castShadow = true;
-                    group.add(armL);
-                    const armR = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.55, 0.2), new THREE
-                        .MeshStandardMaterial({ color: tc, roughness: 0.5 }));
-                    armR.position.set(0.45, 1.75, 0);
-                    armR.castShadow = true;
-                    group.add(armR);
-                    const legL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.55, 0.22), new THREE
-                        .MeshStandardMaterial({ color: lc, roughness: 0.5 }));
-                    legL.position.set(-0.15, 1.05, 0);
-                    legL.castShadow = true;
-                    group.add(legL);
-                    const legR = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.55, 0.22), new THREE
-                        .MeshStandardMaterial({ color: lc, roughness: 0.5 }));
-                    legR.position.set(0.15, 1.05, 0);
-                    legR.castShadow = true;
-                    group.add(legR);
-                    scene.add(group);
-                    let isDragging = false,
-                        prevX = 0,
-                        prevY = 0,
-                        rotY = 0,
-                        rotX = 0.3;
-                    renderer.domElement.addEventListener('mousedown', e => { isDragging = true;
-                        prevX = e.clientX;
-                        prevY = e.clientY; });
-                    window.addEventListener('mouseup', () => { isDragging = false; });
-                    window.addEventListener('mousemove', e => {
-                        if (!isDragging) return;
-                        rotY += (e.clientX - prevX) * 0.01;
-                        rotX += (e.clientY - prevY) * 0.01;
-                        rotX = Math.max(-1, Math.min(1, rotX));
-                        prevX = e.clientX;
-                        prevY = e.clientY;
-                    });
-                    renderer.domElement.addEventListener('wheel', e => {
-                        camera.position.z += e.deltaY * 0.01;
-                        camera.position.z = Math.max(2, Math.min(15, camera.position.z));
-                    });
-
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        const r = 6;
-                        camera.position.x = r * Math.sin(rotY) * Math.cos(rotX);
-                        camera.position.y = 2 + r * Math.sin(rotX);
-                        camera.position.z = r * Math.cos(rotY) * Math.cos(rotX);
-                        camera.lookAt(0, 1.8, 0);
-                        renderer.render(scene, camera);
-                    }
-                    animate();
-                    this._avatar3DGroup = group;
-                }
-                _renderCreate(main) {
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;text-align:center;">
-                  <div class="card" style="padding:60px 20px;">
-                    <div style="font-size:48px;">🛠</div>
-                    <h2>MMS Blox Studio</h2>
-                    <p style="color:#8c8e92;margin:12px 0;">Create your own experiences with MMS Blox Studio — the powerful development environment.</p>
-                    <button class="btn btn-green" style="font-size:18px;padding:14px 32px;">Start Creating</button>
-                    <p style="font-size:12px;color:#aaa;margin-top:8px;">Downloads for Windows & Mac</p>
-                  </div>
-                  <h3 style="margin:20px 0 12px;">Your Creations</h3>
-                  <div class="grid">
-                    ${DB._data.experiences.filter(e=>e.creator===Auth.sessionUser?.username).slice(0,4).map(e=>`
-                      <div class="game-card" onclick="navigate('game?id=${e.id}')">
-                        <div class="thumb" style="background:linear-gradient(135deg,#2c3e50,#34495e);"><div class="play-overlay"><div class="play-btn">▶</div></div></div>
-                        <div class="info"><div class="title">${e.name}</div><div class="meta">▶ ${e.plays.toLocaleString()} plays</div></div>
-                      </div>`).join('')||'<p style="color:#8c8e92;">No creations yet. Download Studio to start building!</p>'}
-                  </div>
-                </div>`;
-                }
-                _renderRobux(main) {
-                    const u = Auth.sessionUser;
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:900px;margin:0 auto;">
-                  <div class="card" style="text-align:center;">
-                    <span style="font-size:48px;">🪙</span>
-                    <h2 style="font-size:36px;">${u?.robuxBalance?.toLocaleString()||0}</h2>
-                    <p style="color:#8c8e92;">Robux Balance</p>
-                    ${u?.premium?'<span class="tag tag-green">Premium Member</span>':''}
-                  </div>
-                  <h3>Buy Robux</h3>
-                  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
-                    ${[{amt:400,price:'$4.99'},{amt:800,price:'$9.99'},{amt:1700,price:'$19.99'},{amt:4500,price:'$49.99'},{amt:10000,price:'$99.99'}].map(p=>`
-                      <div class="card" style="text-align:center;cursor:pointer;" onclick="App.instance._buyRobux(${p.amt})">
-                        <div style="font-size:28px;font-weight:700;">🪙 ${p.amt}</div>
-                        <div style="color:#8c8e92;">${p.price}</div>
-                      </div>`).join('')}
-                  </div>
-                  <h3 style="margin-top:16px;">Premium Membership</h3>
-                  <div class="card" style="text-align:center;">
-                    <p>Get monthly Robux, exclusive items, and more!</p>
-                    <button class="btn btn-green" onclick="App.instance._buyPremium()">Subscribe - $4.99/month</button>
-                  </div>
-                </div>`;
-                }
-                _buyRobux(amt) {
-                    if (Auth.sessionUser) {
-                        DB.updateUser(Auth.sessionUser.id, { robuxBalance: (Auth.sessionUser.robuxBalance || 0) +
-                                amt });
-                        Auth.sessionUser.robuxBalance = (Auth.sessionUser.robuxBalance || 0) + amt;
-                        showToast('Purchased ' + amt + ' Robux! (Simulated)');
-                        navigate('robux');
-                    }
-                }
-                _buyPremium() {
-                    if (Auth.sessionUser) {
-                        DB.updateUser(Auth.sessionUser.id, { premium: true, robuxBalance: (Auth.sessionUser
-                                .robuxBalance || 0) + 450 });
-                        Auth.sessionUser.premium = true;
-                        Auth.sessionUser.robuxBalance = (Auth.sessionUser.robuxBalance || 0) + 450;
-                        showToast('Premium activated! +450 Robux (Simulated)');
-                        navigate('robux');
-                    }
-                }
-                _renderSettings(main) {
-                    const u = Auth.sessionUser;
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
-                  <div class="sidebar-layout">
-                    <div class="side">
-                      <a class="active" onclick="App.instance._switchSettingsTab('account')">Account Info</a>
-                      <a onclick="App.instance._switchSettingsTab('security')">Security</a>
-                      <a onclick="App.instance._switchSettingsTab('privacy')">Privacy</a>
-                      <a onclick="App.instance._switchSettingsTab('verified')">Verified Badge</a>
-                    </div>
-                    <div class="main" id="settingsContent">
-                      <div class="card" id="st-account">
-                        <h3>Account Info</h3>
-                        <p><strong>Username:</strong> ${u?.username} ${u?.verifiedBadge?'<span class="badge-verified">✓</span>':''}${u?.isAdmin?'<span class="badge-admin">ADMIN</span>':''}</p>
-                        <p><strong>Display Name:</strong> ${u?.displayName||u?.username}</p>
-                        <p><strong>Created:</strong> ${u?.created?new Date(u.created).toLocaleDateString():'N/A'}</p>
-                        <p><strong>Email Verified:</strong> ${u?.emailVerified?'✅ Yes':'❌ No'} <button class="btn btn-white btn-sm" onclick="App.instance._verifyEmail()">${u?.emailVerified?'Resend':'Verify'}</button></p>
-                        <p><strong>Phone Verified:</strong> ${u?.phoneVerified?'✅ Yes':'❌ No'}</p>
-                        <button class="btn btn-white btn-sm" onclick="App.instance._changePassword()">Change Password</button>
-                      </div>
-                      <div class="card" id="st-security" style="display:none;">
-                        <h3>Security</h3>
-                        <p><strong>Two-Step Verification:</strong> ${u?.twoSVEnabled?'✅ Enabled':'❌ Disabled'}</p>
-                        <button class="btn btn-white btn-sm" onclick="App.instance._toggle2SV()">${u?.twoSVEnabled?'Disable':'Enable'} 2SV</button>
-                      </div>
-                      <div class="card" id="st-privacy" style="display:none;">
-                        <h3>Privacy Settings</h3>
-                        <div><label>Who can message me?</label><select id="privMsg"><option>Everyone</option><option>Friends</option><option>No one</option></select></div>
-                        <div style="margin-top:8px;"><label>Who can follow me?</label><select id="privFollow"><option>Everyone</option><option>Friends</option><option>No one</option></select></div>
-                        <button class="btn btn-green btn-sm" style="margin-top:12px;" onclick="App.instance._savePrivacy()">Save</button>
-                      </div>
-                      <div class="card" id="st-verified" style="display:none;">
-                        <h3>Verified Badge</h3>
-                        ${u?.verifiedBadge?'<p>✅ You have the verified badge!</p>':'<p>Apply for the verified badge if you are a notable creator or brand.</p>'}
-                        ${!u?.verifiedBadge?`<button class="btn btn-green btn-sm" onclick="App.instance._requestVerification()">Request Verification</button>`:''}
-                      </div>
-                    </div>
-                  </div>
-                </div>`;
-                }
-                _switchSettingsTab(tab) {
-                    ['account', 'security', 'privacy', 'verified'].forEach(t => {
-                        const el = document.getElementById('st-' + t);
-                        if (el) el.style.display = t === tab ? 'block' : 'none';
-                    });
-                    document.querySelectorAll('.side a').forEach(a => a.classList.remove('active'));
-                    const links = document.querySelectorAll('.side a');
-                    const map = { account: 0, security: 1, privacy: 2, verified: 3 };
-                    if (links[map[tab]]) links[map[tab]].classList.add('active');
-                }
-                _verifyEmail() {
-                    const code = prompt('Enter the verification code sent to your email (hint: use "MMS123"):');
-                    if (code === 'MMS123' || code === 'ROBLOX12345') {
-                        DB.updateUser(Auth.sessionUser.id, { emailVerified: true });
-                        Auth.sessionUser.emailVerified = true;
-                        showToast('Email verified!');
-                        navigate('settings');
-                    } else { showToast('Invalid code. Try "MMS123"'); }
-                }
-                _changePassword() {
-                    const np = prompt('Enter new password:');
-                    if (np && np.length >= 8) {
-                        DB.updateUser(Auth.sessionUser.id, { password: np });
-                        Auth.sessionUser.password = np;
-                        showToast('Password changed!');
-                    } else { showToast('Password too short.'); }
-                }
-                _toggle2SV() {
-                    const enable = !Auth.sessionUser.twoSVEnabled;
-                    DB.updateUser(Auth.sessionUser.id, { twoSVEnabled: enable });
-                    Auth.sessionUser.twoSVEnabled = enable;
-                    showToast(enable ? 'Two-Step Verification enabled!' : 'Two-Step Verification disabled.');
-                    navigate('settings');
-                }
-                _savePrivacy() {
-                    const msg = document.getElementById('privMsg')?.value || 'Everyone';
-                    const follow = document.getElementById('privFollow')?.value || 'Everyone';
-                    DB.updateUser(Auth.sessionUser.id, { settings: { privacyMessages: msg,
-                            privacyFollow: follow, privacyInventory: 'Friends' } });
-                    Auth.sessionUser.settings = { privacyMessages: msg, privacyFollow: follow,
-                        privacyInventory: 'Friends' };
-                    showToast('Privacy settings saved!');
-                }
-                _requestVerification() {
-                    const reason = prompt('Why should you be verified? (e.g., notable creator, brand):');
-                    if (reason) {
-                        DB.addVerificationRequest({ id: 'vr-' + uuid(), userId: Auth.sessionUser.id,
-                            username: Auth.sessionUser.username, reason, status: 'pending',
-                            timestamp: nowISO() });
-                        showToast('Verification request submitted!');
-                    }
-                }
-                _renderProfile(main) {
-                    const u = Auth.sessionUser;
-                    const viewingId = new URLSearchParams(window.location.hash.split('?')[1] || '').get('userId') ||
-                        u?.id;
-                    const viewed = DB.getUser(viewingId) || u;
-                    if (!viewed) { main.innerHTML = '<p>User not found.</p>'; return; }
-                    const isSelf = viewed.id === u?.id;
-                    const isFriend = u?.friends?.includes(viewed.id);
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:800px;margin:0 auto;">
-                  <div class="card" style="text-align:center;position:relative;">
-                    <div style="height:120px;background:linear-gradient(135deg,#e2231a,#f7ba2c);border-radius:12px 12px 0 0;margin:-24px -24px 0;"></div>
-                    <div style="width:100px;height:100px;border-radius:50%;background:#555;margin:-50px auto 0;border:4px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700;">${viewed.username[0].toUpperCase()}</div>
-                    <h2 style="margin-top:8px;">${viewed.displayName||viewed.username} ${viewed.verifiedBadge?'<span class="badge-verified">✓</span>':''}${viewed.isAdmin?'<span class="badge-admin">ADMIN</span>':''}${viewed.isModerator&&!viewed.isAdmin?'<span class="badge-admin" style="background:#3399ff;">MOD</span>':''}</h2>
-                    <p style="color:#8c8e92;">@${viewed.username} · 🪙 ${viewed.robuxBalance?.toLocaleString()||0} ${viewed.premium?'· <span class="tag tag-green">Premium</span>':''}</p>
-                    ${!isSelf?`
-                      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;">
-                        ${isFriend?'<button class="btn btn-white btn-sm" onclick="App.instance._unfriend(\''+viewed.id+'\')">Friends ✓</button>':'<button class="btn btn-green btn-sm" onclick="App.instance._addFriend(\''+viewed.id+'\')">Add Friend</button>'}
-                        <button class="btn btn-white btn-sm" onclick="navigate('messages?with='+encodeURIComponent('${viewed.id}'))">Message</button>
-                        <button class="btn btn-white btn-sm" onclick="App.instance._reportUser('${viewed.id}')">Report</button>
-                      </div>`:''}
+                <div class="main">
+                  <div class="card">
+                    <div class="avatar-preview-3d" id="avatar3DContainer"></div>
+                    <div style="text-align:center;margin-top:8px;font-size:12px;color:#8c8e92;">🖱 Drag to rotate · Scroll to zoom</div>
                   </div>
                   <div class="card">
-                    <div class="tab-nav"><div class="tab active">About</div><div class="tab">Friends (${viewed.friends?.length||0})</div><div class="tab">Groups (${viewed.groups?.length||0})</div></div>
-                    <p><strong>Joined:</strong> ${viewed.created?new Date(viewed.created).toLocaleDateString():'Unknown'}</p>
-                    <p><strong>Friends:</strong> ${viewed.friends?.length||0}</p>
-                  </div>
-                </div>`;
-                }
-                _addFriend(uid) {
-                    if (Auth.sessionUser && !Auth.sessionUser.friends.includes(uid)) {
-                        Auth.sessionUser.friends.push(uid);
-                        DB.updateUser(Auth.sessionUser.id, { friends: Auth.sessionUser.friends });
-                        const other = DB.getUser(uid);
-                        if (other && !other.friends.includes(Auth.sessionUser.id)) {
-                            other.friends.push(Auth.sessionUser.id);
-                            DB.updateUser(uid, { friends: other.friends });
-                        }
-                        showToast('Friend added!');
-                        navigate('profile?userId=' + uid);
-                    }
-                }
-                _unfriend(uid) {
-                    if (Auth.sessionUser) {
-                        Auth.sessionUser.friends = Auth.sessionUser.friends.filter(f => f !== uid);
-                        DB.updateUser(Auth.sessionUser.id, { friends: Auth.sessionUser.friends });
-                        showToast('Friend removed.');
-                        navigate('profile?userId=' + uid);
-                    }
-                }
-                _reportUser(uid) {
-                    const reason = prompt(
-                        'Report reason:\n1. Inappropriate Content\n2. Harassment\n3. Scamming\n4. Exploiting\n5. Other\n\nEnter number:'
-                        );
-                    if (reason) {
-                        const cats = ['', 'Inappropriate Content', 'Harassment', 'Scamming', 'Exploiting',
-                            'Other'
-                        ];
-                        const cat = cats[parseInt(reason)] || 'Other';
-                        DB.addReport({ id: 'report-' + uuid(), reporterId: Auth.sessionUser.id,
-                            reportedUserId: uid, category: cat, description: 'Reported via profile.',
-                            timestamp: nowISO(), status: 'open' });
-                        showToast('Report submitted.');
-                    }
-                }
-                _renderFriends(main) {
-                    const u = Auth.sessionUser;
-                    const friends = (u?.friends || []).map(fid => DB.getUser(fid)).filter(Boolean);
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:800px;margin:0 auto;">
-                  <h2>Friends (${friends.length})</h2>
-                  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr));">
-                    ${friends.map(f=>`
-                      <div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="navigate('profile?userId=${f.id}')">
-                        <div style="width:40px;height:40px;border-radius:50%;background:#555;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">${f.username[0].toUpperCase()}</div>
-                        <div style="flex:1;"><strong>${f.displayName||f.username}</strong> ${f.verifiedBadge?'<span class="badge-verified">✓</span>':''}</div>
-                        <span style="width:8px;height:8px;border-radius:50%;background:#2ecc71;display:inline-block;"></span>
-                        <button class="btn btn-white btn-sm" onclick="event.stopPropagation();App.instance._unfriend('${f.id}');navigate('friends');">Unfriend</button>
-                      </div>`).join('')||'<p style="color:#8c8e92;">No friends yet. Explore and make friends!</p>'}
-                  </div>
-                </div>`;
-                }
-                _renderMessages(main) {
-                    const u = Auth.sessionUser;
-                    const withId = new URLSearchParams(window.location.hash.split('?')[1] || '').get('with') || '';
-                    const msgs = DB.getMessages(u.id).filter(m => m.from === withId || m.to === withId || m.from ===
-                        u.id || m.to === u.id);
-                    const conversations = [...new Set(DB.getMessages(u.id).map(m => m.from === u.id ? m.to : m.from)
-                        .filter(Boolean))];
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:900px;margin:0 auto;">
-                  <div class="sidebar-layout">
-                    <div class="side" style="max-height:500px;overflow-y:auto;">
-                      <h4 style="padding:10px 20px;">Conversations</h4>
-                      ${conversations.map(cid=>{
-                        const cu=DB.getUser(cid);
-                        return `<a onclick="navigate('messages?with=${cid}')" style="cursor:pointer;">${cu?.displayName||cu?.username||'Unknown'} ${cu?.verifiedBadge?'<span class="badge-verified">✓</span>':''}</a>`;
-                      }).join('')||'<p style="padding:10px 20px;color:#8c8e92;">No conversations</p>'}
+                    <h3>Body Colors</h3>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                      <div><label>Head</label><input type="color" id="headColor" value="${av.headColor}" onchange="App.instance._updateAvatarColor('headColor',this.value)"></div>
+                      <div><label>Torso</label><input type="color" id="torsoColor" value="${av.torsoColor}" onchange="App.instance._updateAvatarColor('torsoColor',this.value)"></div>
+                      <div><label>Legs</label><input type="color" id="legColor" value="${av.legColor}" onchange="App.instance._updateAvatarColor('legColor',this.value)"></div>
                     </div>
-                    <div class="main">
-                      <div class="card" style="min-height:400px;max-height:500px;overflow-y:auto;" id="chatArea">
-                        ${withId?`
-                          <h3>Chat with ${DB.getUser(withId)?.displayName||DB.getUser(withId)?.username||'User'}</h3>
-                          <div id="chatMessages" style="margin:12px 0;">
-                            ${msgs.map(m=>`
-                              <div style="text-align:${m.from===u.id?'right':'left'};margin:4px 0;">
-                                <span class="bubble-chat ${m.from===u.id?'self':''}">${m.text}</span>
-                                <div style="font-size:10px;color:#aaa;">${new Date(m.time).toLocaleTimeString()}</div>
-                              </div>`).join('')}
-                          </div>
-                          <div style="display:flex;gap:8px;margin-top:12px;">
-                            <input type="text" id="chatInput" placeholder="Type a message..." style="flex:1;">
-                            <button class="btn btn-green btn-sm" id="sendChat">Send</button>
-                          </div>
-                        `:'<p style="color:#8c8e92;text-align:center;padding:40px;">Select a conversation to start chatting.</p>'}
+                  </div>
+                </div>
+              </div>
+            </div>`;
+            this._avatarColors = { headColor:av.headColor, torsoColor:av.torsoColor, legColor:av.legColor };
+        }
+        _updateAvatarColor(prop, val) {
+            if (!this._avatarColors) this._avatarColors = {};
+            this._avatarColors[prop] = val;
+            if (Auth.sessionUser) { if (!Auth.sessionUser.avatar) Auth.sessionUser.avatar = {}; Auth.sessionUser.avatar[prop] = val; DB.updateUser(Auth.sessionUser.id, { avatar:Auth.sessionUser.avatar }); }
+            this._initAvatar3D();
+        }
+        _initAvatar3D() {
+            const container = document.getElementById('avatar3DContainer');
+            if (!container || !window.THREE) return;
+            container.innerHTML = '';
+            const w = container.clientWidth, h = container.clientHeight || 400;
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xe8e8e8);
+            const camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 100);
+            camera.position.set(4, 3, 6); camera.lookAt(0, 1.2, 0);
+            const renderer = new THREE.WebGLRenderer({ antialias:true });
+            renderer.setSize(w, h); renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+            scene.add(new THREE.DirectionalLight(0xffffff, 1));
+            scene.add(new THREE.AmbientLight(0x404040));
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10,10), new THREE.MeshStandardMaterial({ color:0xcccccc }));
+            floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+            const group = new THREE.Group();
+            const hc = this._avatarColors?.headColor || '#f5cba7';
+            const tc = this._avatarColors?.torsoColor || '#3498db';
+            const lc = this._avatarColors?.legColor || '#2c3e50';
+            const mk = (w,h,d,c,x,y,z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({ color:c, roughness:0.5 })); m.position.set(x,y,z); m.castShadow=true; group.add(m); };
+            mk(0.45,0.5,0.45,hc,0,2.45,0);
+            mk(0.55,0.7,0.3,tc,0,1.7,0);
+            mk(0.2,0.55,0.2,tc,-0.45,1.75,0);
+            mk(0.2,0.55,0.2,tc,0.45,1.75,0);
+            mk(0.22,0.55,0.22,lc,-0.15,1.05,0);
+            mk(0.22,0.55,0.22,lc,0.15,1.05,0);
+            scene.add(group);
+            let isDragging=false, prevX=0, prevY=0, rotY=0, rotX=0.3;
+            renderer.domElement.addEventListener('mousedown', e => { isDragging=true; prevX=e.clientX; prevY=e.clientY; });
+            window.addEventListener('mouseup', () => { isDragging=false; });
+            window.addEventListener('mousemove', e => { if (!isDragging) return; rotY+=(e.clientX-prevX)*0.01; rotX+=(e.clientY-prevY)*0.01; rotX=Math.max(-1,Math.min(1,rotX)); prevX=e.clientX; prevY=e.clientY; });
+            renderer.domElement.addEventListener('wheel', e => { camera.position.z+=e.deltaY*0.01; camera.position.z=Math.max(2,Math.min(15,camera.position.z)); });
+            const animate = () => { requestAnimationFrame(animate); const r=6; camera.position.x=r*Math.sin(rotY)*Math.cos(rotX); camera.position.y=2+r*Math.sin(rotX); camera.position.z=r*Math.cos(rotY)*Math.cos(rotX); camera.lookAt(0,1.8,0); renderer.render(scene,camera); };
+            animate();
+        }
+        _renderCreate(main) {
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;text-align:center;">
+              <div class="card" style="padding:60px 20px;">
+                <div style="font-size:48px;">🛠</div>
+                <h2>MMS Blox Studio</h2>
+                <p style="color:#8c8e92;margin:12px 0;">Create your own experiences with MMS Blox Studio.</p>
+                <button class="btn btn-green" style="font-size:18px;padding:14px 32px;">Start Creating</button>
+              </div>
+            </div>`;
+        }
+        _renderRobux(main) {
+            const u = Auth.sessionUser;
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:900px;margin:0 auto;">
+              <div class="card" style="text-align:center;">
+                <span style="font-size:48px;">🪙</span>
+                <h2 style="font-size:36px;">${u?.robuxBalance?.toLocaleString()||0}</h2>
+                <p style="color:#8c8e92;">Robux Balance</p>
+                ${u?.premium?'<span class="tag tag-green">Premium Member</span>':''}
+              </div>
+              <h3>Buy Robux</h3>
+              <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+                ${[{amt:400,price:'$4.99'},{amt:800,price:'$9.99'},{amt:1700,price:'$19.99'},{amt:4500,price:'$49.99'},{amt:10000,price:'$99.99'}].map(p=>`
+                  <div class="card" style="text-align:center;cursor:pointer;" onclick="App.instance._buyRobux(${p.amt})">
+                    <div style="font-size:28px;font-weight:700;">🪙 ${p.amt}</div>
+                    <div style="color:#8c8e92;">${p.price}</div>
+                  </div>`).join('')}
+              </div>
+              <div class="card" style="text-align:center;margin-top:16px;">
+                <p>Get monthly Robux, exclusive items, and more!</p>
+                <button class="btn btn-green" onclick="App.instance._buyPremium()">Subscribe - $4.99/month</button>
+              </div>
+            </div>`;
+        }
+        _buyRobux(amt) { if (Auth.sessionUser) { DB.updateUser(Auth.sessionUser.id, { robuxBalance:(Auth.sessionUser.robuxBalance||0)+amt }); Auth.sessionUser.robuxBalance=(Auth.sessionUser.robuxBalance||0)+amt; showToast('Purchased '+amt+' Robux! (Simulated)'); navigate('robux'); } }
+        _buyPremium() { if (Auth.sessionUser) { DB.updateUser(Auth.sessionUser.id, { premium:true, robuxBalance:(Auth.sessionUser.robuxBalance||0)+450 }); Auth.sessionUser.premium=true; Auth.sessionUser.robuxBalance=(Auth.sessionUser.robuxBalance||0)+450; showToast('Premium activated! +450 Robux (Simulated)'); navigate('robux'); } }
+        _renderSettings(main) {
+            const u = Auth.sessionUser;
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
+              <div class="sidebar-layout">
+                <div class="side">
+                  <a class="active" onclick="App.instance._switchSettingsTab('account')">Account Info</a>
+                  <a onclick="App.instance._switchSettingsTab('security')">Security</a>
+                  <a onclick="App.instance._switchSettingsTab('privacy')">Privacy</a>
+                  <a onclick="App.instance._switchSettingsTab('verified')">Verified Badge</a>
+                </div>
+                <div class="main" id="settingsContent">
+                  <div class="card" id="st-account">
+                    <h3>Account Info</h3>
+                    <p><strong>Username:</strong> ${u?.username} ${u?.verifiedBadge?'<span class="badge-verified">✓</span>':''}${u?.isAdmin?'<span class="badge-admin">ADMIN</span>':''}</p>
+                    <p><strong>Display Name:</strong> ${u?.displayName||u?.username}</p>
+                    <p><strong>Created:</strong> ${u?.created?new Date(u.created).toLocaleDateString():'N/A'}</p>
+                    <p><strong>Email Verified:</strong> ${u?.emailVerified?'✅ Yes':'❌ No'} <button class="btn btn-white btn-sm" onclick="App.instance._verifyEmail()">${u?.emailVerified?'Resend':'Verify'}</button></p>
+                    <button class="btn btn-white btn-sm" onclick="App.instance._changePassword()">Change Password</button>
+                  </div>
+                  <div class="card" id="st-security" style="display:none;">
+                    <h3>Security</h3>
+                    <p><strong>Two-Step Verification:</strong> ${u?.twoSVEnabled?'✅ Enabled':'❌ Disabled'}</p>
+                    <button class="btn btn-white btn-sm" onclick="App.instance._toggle2SV()">${u?.twoSVEnabled?'Disable':'Enable'} 2SV</button>
+                  </div>
+                  <div class="card" id="st-privacy" style="display:none;">
+                    <h3>Privacy Settings</h3>
+                    <div><label>Who can message me?</label><select id="privMsg"><option>Everyone</option><option>Friends</option><option>No one</option></select></div>
+                    <button class="btn btn-green btn-sm" style="margin-top:12px;" onclick="App.instance._savePrivacy()">Save</button>
+                  </div>
+                  <div class="card" id="st-verified" style="display:none;">
+                    <h3>Verified Badge</h3>
+                    ${u?.verifiedBadge?'<p>✅ You have the verified badge!</p>':'<p>Apply for the verified badge if you are a notable creator.</p>'}
+                    ${!u?.verifiedBadge?'<button class="btn btn-green btn-sm" onclick="App.instance._requestVerification()">Request Verification</button>':''}
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        }
+        _switchSettingsTab(tab) {
+            ['account','security','privacy','verified'].forEach(t => { const el=document.getElementById('st-'+t); if(el) el.style.display=t===tab?'block':'none'; });
+        }
+        _verifyEmail() { const code=prompt('Enter code (hint: MMS123):'); if (code==='MMS123') { DB.updateUser(Auth.sessionUser.id,{emailVerified:true}); Auth.sessionUser.emailVerified=true; showToast('Email verified!'); navigate('settings'); } else showToast('Invalid code.'); }
+        _changePassword() { const np=prompt('Enter new password:'); if (np&&np.length>=8) { DB.updateUser(Auth.sessionUser.id,{password:np}); Auth.sessionUser.password=np; showToast('Password changed!'); } else showToast('Password too short.'); }
+        _toggle2SV() { const e=!Auth.sessionUser.twoSVEnabled; DB.updateUser(Auth.sessionUser.id,{twoSVEnabled:e}); Auth.sessionUser.twoSVEnabled=e; showToast(e?'2SV enabled!':'2SV disabled.'); navigate('settings'); }
+        _savePrivacy() { const msg=document.getElementById('privMsg')?.value||'Everyone'; DB.updateUser(Auth.sessionUser.id,{settings:{privacyMessages:msg,privacyFollow:'Everyone',privacyInventory:'Friends'}}); showToast('Privacy settings saved!'); }
+        _requestVerification() { const reason=prompt('Why should you be verified?'); if (reason) { DB.addVerificationRequest({id:'vr-'+uuid(),userId:Auth.sessionUser.id,username:Auth.sessionUser.username,reason,status:'pending',timestamp:nowISO()}); showToast('Verification request submitted!'); } }
+        _renderProfile(main) {
+            const u = Auth.sessionUser;
+            const viewingId = new URLSearchParams(window.location.hash.split('?')[1]||'').get('userId')||u?.id;
+            const viewed = DB.getUser(viewingId)||u;
+            if (!viewed) { main.innerHTML='<p>User not found.</p>'; return; }
+            const isSelf = viewed.id===u?.id;
+            const isFriend = u?.friends?.includes(viewed.id);
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:800px;margin:0 auto;">
+              <div class="card" style="text-align:center;position:relative;">
+                <div style="height:120px;background:linear-gradient(135deg,#e2231a,#f7ba2c);border-radius:12px 12px 0 0;margin:-24px -24px 0;"></div>
+                <div style="width:100px;height:100px;border-radius:50%;background:#555;margin:-50px auto 0;border:4px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700;">${viewed.username[0].toUpperCase()}</div>
+                <h2 style="margin-top:8px;">${viewed.displayName||viewed.username} ${viewed.verifiedBadge?'<span class="badge-verified">✓</span>':''}${viewed.isAdmin?'<span class="badge-admin">ADMIN</span>':''}</h2>
+                <p style="color:#8c8e92;">@${viewed.username} · 🪙 ${viewed.robuxBalance?.toLocaleString()||0}</p>
+                ${!isSelf?`<div style="margin-top:12px;display:flex;gap:8px;justify-content:center;">
+                  ${isFriend?'<button class="btn btn-white btn-sm" onclick="App.instance._unfriend(\''+viewed.id+'\')">Friends ✓</button>':'<button class="btn btn-green btn-sm" onclick="App.instance._addFriend(\''+viewed.id+'\')">Add Friend</button>'}
+                  <button class="btn btn-white btn-sm" onclick="App.instance._reportUser('${viewed.id}')">Report</button>
+                </div>`:''}
+              </div>
+              <div class="card">
+                <p><strong>Joined:</strong> ${viewed.created?new Date(viewed.created).toLocaleDateString():'Unknown'}</p>
+                <p><strong>Friends:</strong> ${viewed.friends?.length||0}</p>
+              </div>
+            </div>`;
+        }
+        _addFriend(uid) { if (Auth.sessionUser&&!Auth.sessionUser.friends.includes(uid)) { Auth.sessionUser.friends.push(uid); DB.updateUser(Auth.sessionUser.id,{friends:Auth.sessionUser.friends}); const other=DB.getUser(uid); if (other&&!other.friends.includes(Auth.sessionUser.id)) { other.friends.push(Auth.sessionUser.id); DB.updateUser(uid,{friends:other.friends}); } showToast('Friend added!'); navigate('profile?userId='+uid); } }
+        _unfriend(uid) { if (Auth.sessionUser) { Auth.sessionUser.friends=Auth.sessionUser.friends.filter(f=>f!==uid); DB.updateUser(Auth.sessionUser.id,{friends:Auth.sessionUser.friends}); showToast('Friend removed.'); navigate('profile?userId='+uid); } }
+        _reportUser(uid) { const reason=prompt('Report reason:\n1. Inappropriate Content\n2. Harassment\n3. Scamming\n4. Exploiting\n5. Other\n\nEnter number:'); if (reason) { const cats=['','Inappropriate Content','Harassment','Scamming','Exploiting','Other']; DB.addReport({id:'report-'+uuid(),reporterId:Auth.sessionUser.id,reportedUserId:uid,category:cats[parseInt(reason)]||'Other',description:'Reported via profile.',timestamp:nowISO(),status:'open'}); showToast('Report submitted.'); } }
+        _renderFriends(main) {
+            const u = Auth.sessionUser;
+            const friends = (u?.friends||[]).map(fid=>DB.getUser(fid)).filter(Boolean);
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:800px;margin:0 auto;">
+              <h2>Friends (${friends.length})</h2>
+              <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr));">
+                ${friends.map(f=>`
+                  <div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="navigate('profile?userId=${f.id}')">
+                    <div style="width:40px;height:40px;border-radius:50%;background:#555;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">${f.username[0].toUpperCase()}</div>
+                    <div style="flex:1;"><strong>${f.displayName||f.username}</strong></div>
+                    <button class="btn btn-white btn-sm" onclick="event.stopPropagation();App.instance._unfriend('${f.id}');navigate('friends');">Unfriend</button>
+                  </div>`).join('')||'<p style="color:#8c8e92;">No friends yet!</p>'}
+              </div>
+            </div>`;
+        }
+        _renderMessages(main) {
+            const u = Auth.sessionUser;
+            const withId = new URLSearchParams(window.location.hash.split('?')[1]||'').get('with')||'';
+            const msgs = DB.getMessages(u.id).filter(m=>m.from===withId||m.to===withId||m.from===u.id||m.to===u.id);
+            const conversations = [...new Set(DB.getMessages(u.id).map(m=>m.from===u.id?m.to:m.from).filter(Boolean))];
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:900px;margin:0 auto;">
+              <div class="sidebar-layout">
+                <div class="side" style="max-height:500px;overflow-y:auto;">
+                  <h4 style="padding:10px 20px;">Conversations</h4>
+                  ${conversations.map(cid=>{ const cu=DB.getUser(cid); return `<a onclick="navigate('messages?with=${cid}')" style="cursor:pointer;">${cu?.displayName||cu?.username||'Unknown'}</a>`; }).join('')||'<p style="padding:10px 20px;color:#8c8e92;">No conversations</p>'}
+                </div>
+                <div class="main">
+                  <div class="card" style="min-height:400px;max-height:500px;overflow-y:auto;" id="chatArea">
+                    ${withId?`
+                      <h3>Chat with ${DB.getUser(withId)?.username||'User'}</h3>
+                      <div id="chatMessages" style="margin:12px 0;">
+                        ${msgs.map(m=>`<div style="text-align:${m.from===u.id?'right':'left'};margin:4px 0;"><span class="bubble-chat ${m.from===u.id?'self':''}">${m.text}</span></div>`).join('')}
                       </div>
-                    </div>
+                      <div style="display:flex;gap:8px;margin-top:12px;">
+                        <input type="text" id="chatInput" placeholder="Type a message..." style="flex:1;">
+                        <button class="btn btn-green btn-sm" id="sendChat">Send</button>
+                      </div>`:'<p style="color:#8c8e92;text-align:center;padding:40px;">Select a conversation.</p>'}
                   </div>
-                </div>`;
-                    setTimeout(() => {
-                        const sendBtn = document.getElementById('sendChat');
-                        const input = document.getElementById('chatInput');
-                        if (sendBtn && input) {
-                            sendBtn.addEventListener('click', () => this._sendMessage(withId, input));
-                            input.addEventListener('keydown', e => { if (e.key === 'Enter') this
-                                    ._sendMessage(withId, input); });
-                        }
-                    }, 100);
-                }
-                _sendMessage(toId, input) {
-                    const text = input.value.trim();
-                    if (!text || !toId) return;
-                    const filterResult = profanityFilter(text);
-                    if (filterResult.flagged) { showToast('Inappropriate content detected. Message not sent.');
-                        return; }
-                    const msg = { id: 'msg-' + uuid(), from: Auth.sessionUser.id, to: toId, text: filterResult
-                            .filtered, time: nowISO(), read: false };
-                    DB.addMessage(Auth.sessionUser.id, msg);
-                    DB.addMessage(toId, msg);
-                    input.value = '';
-                    showToast('Message sent!');
-                    navigate('messages?with=' + toId);
-                }
-                _renderGroups(main) {
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
-                  <h2>Groups</h2>
-                  <div class="grid">
-                    ${DB._data.groups.filter(g=>!g.deleted).map(g=>`
-                      <div class="card" style="text-align:center;">
-                        <div style="width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,#e2231a,#f7ba2c);margin:0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;">${g.name[0]}</div>
-                        <h4 style="margin:8px 0;">${g.name}</h4>
-                        <p style="color:#8c8e92;">👥 ${g.members.toLocaleString()} members</p>
-                        <button class="btn btn-green btn-sm">Join Group</button>
-                      </div>`).join('')}
-                  </div>
-                </div>`;
-                }
-                _renderAdmin(main) {
-                    if (!Auth.isAdmin()) { main.innerHTML =
-                        '<p style="text-align:center;padding:40px;">Access Denied</p>'; return; }
-                    const reports = DB.getReports().filter(r => r.status === 'open');
-                    const vr = DB.getVerificationRequests().filter(v => v.status === 'pending');
-                    const users = DB._data.users;
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
-                  <h2>🛡 Admin Panel</h2>
-                  <div class="tab-nav">
-                    <div class="tab active" onclick="App.instance._switchAdminTab('reports')">Reports (${reports.length})</div>
-                    <div class="tab" onclick="App.instance._switchAdminTab('users')">Users (${users.length})</div>
-                    <div class="tab" onclick="App.instance._switchAdminTab('verified')">Verification (${vr.length})</div>
-                    <div class="tab" onclick="App.instance._switchAdminTab('actions')">Actions</div>
-                  </div>
-                  <div id="adminReports">
-                    <table>${reports.map(r=>`
-                      <tr>
-                        <td>${r.category}</td><td>Reporter: ${DB.getUser(r.reporterId)?.username||'?'}</td><td>Reported: ${DB.getUser(r.reportedUserId)?.username||'?'}</td>
-                        <td>${new Date(r.timestamp).toLocaleDateString()}</td>
-                        <td>
-                          <button class="btn btn-white btn-sm" onclick="App.instance._adminAction('warn','${r.id}','${r.reportedUserId}')">Warn</button>
-                          <button class="btn btn-white btn-sm" onclick="App.instance._adminAction('ban1d','${r.id}','${r.reportedUserId}')">Ban 1d</button>
-                          <button class="btn btn-red btn-sm" onclick="App.instance._adminAction('banperm','${r.id}','${r.reportedUserId}')">Perm Ban</button>
-                          <button class="btn btn-white btn-sm" onclick="App.instance._adminAction('dismiss','${r.id}')">Dismiss</button>
-                        </td>
-                      </tr>`).join('')||'<tr><td colspan="5">No open reports.</td></tr>'}</table>
-                  </div>
-                  <div id="adminUsers" style="display:none;">
-                    <table>${users.map(u=>`
-                      <tr>
-                        <td>${u.username} ${u.verifiedBadge?'✓':''}${u.isAdmin?'🛡':''}</td><td>🪙${u.robuxBalance||0}</td><td>${u.ban?'<span class="tag tag-red">Banned</span>':'<span class="tag tag-green">Active</span>'}</td>
-                        <td>
-                          <button class="btn btn-white btn-sm" onclick="App.instance._toggleMod('${u.id}')">${u.isModerator?'Remove Mod':'Make Mod'}</button>
-                          ${u.ban?`<button class="btn btn-green btn-sm" onclick="App.instance._unbanUser('${u.id}')">Unban</button>`:''}
-                        </td>
-                      </tr>`).join('')}</table>
-                  </div>
-                  <div id="adminVerified" style="display:none;">
-                    ${vr.map(v=>`
-                      <div class="card">
-                        <p><strong>${v.username}</strong>: ${v.reason}</p>
-                        <button class="btn btn-green btn-sm" onclick="App.instance._approveVerify('${v.id}','${v.userId}')">Approve</button>
-                        <button class="btn btn-red btn-sm" onclick="App.instance._denyVerify('${v.id}')">Deny</button>
-                      </div>`).join('')||'<p>No pending verification requests.</p>'}
-                  </div>
-                  <div id="adminActions" style="display:none;">
-                    <div class="card">
-                      <h4>Manual Ban User</h4>
-                      <input type="text" id="banUserInput" placeholder="Username to ban">
-                      <input type="text" id="banReasonInput" placeholder="Reason" style="margin-top:8px;">
-                      <button class="btn btn-red btn-sm" style="margin-top:8px;" onclick="App.instance._manualBan()">Ban Permanently</button>
-                    </div>
-                  </div>
-                </div>`;
-                }
-                _switchAdminTab(tab) {
-                    ['reports', 'users', 'verified', 'actions'].forEach(t => {
-                        const el = document.getElementById('admin' + t.charAt(0).toUpperCase() + t.slice(
-                            1));
-                        if (el) el.style.display = t === tab ? 'block' : 'none';
-                    });
-                    document.querySelectorAll('.tab-nav .tab').forEach((t, i) => t.classList.toggle('active',
-                        ['reports', 'users', 'verified', 'actions'].indexOf(tab) === i));
-                }
-                _adminAction(action, reportId, userId) {
-                    switch (action) {
-                        case 'warn':
-                            if (userId) {
-                                const u = DB.getUser(userId);
-                                if (u) { u.warnings.push({ time: nowISO(), reason: 'Moderator warning' });
-                                    DB.updateUser(userId, { warnings: u.warnings });
-                                    showToast('User warned.'); }
-                            }
-                            DB.updateReport(reportId, { status: 'resolved' });
-                            break;
-                        case 'ban1d':
-                            if (userId) DB.updateUser(userId, { ban: { banned: true, banEnd: new Date(Date.now() +
-                                    86400000).toISOString(), reason: 'Moderator action' } });
-                            DB.updateReport(reportId, { status: 'resolved' });
-                            showToast('User banned for 1 day.');
-                            break;
-                        case 'banperm':
-                            if (userId) DB.updateUser(userId, { ban: { banned: true, banEnd: null,
-                                reason: 'Permanent ban by moderator' } });
-                            DB.updateReport(reportId, { status: 'resolved' });
-                            showToast('User permanently banned.');
-                            break;
-                        case 'dismiss':
-                            DB.updateReport(reportId, { status: 'dismissed' });
-                            showToast('Report dismissed.');
-                            break;
-                    }
-                    navigate('admin');
-                }
-                _toggleMod(uid) {
-                    const u = DB.getUser(uid);
-                    if (u) { DB.updateUser(uid, { isModerator: !u.isModerator });
-                        showToast(u.isModerator ? 'Moderator removed.' : 'Moderator granted.'); }
-                    navigate('admin');
-                }
-                _unbanUser(uid) { DB.updateUser(uid, { ban: null });
-                    showToast('User unbanned.');
-                    navigate('admin'); }
-                _approveVerify(vrid, uid) {
-                    DB.updateVerificationRequest(vrid, { status: 'approved' });
-                    DB.updateUser(uid, { verifiedBadge: true });
-                    showToast('Verified badge approved!');
-                    navigate('admin');
-                }
-                _denyVerify(vrid) { DB.updateVerificationRequest(vrid, { status: 'denied' });
-                    showToast('Verification denied.');
-                    navigate('admin'); }
-                _manualBan() {
-                    const uname = document.getElementById('banUserInput')?.value.trim();
-                    const reason = document.getElementById('banReasonInput')?.value.trim() || 'Violation';
-                    const u = DB.getUserByUsername(uname);
-                    if (u) { DB.updateUser(u.id, { ban: { banned: true, banEnd: null, reason } });
-                        showToast('User ' + uname + ' permanently banned.'); } else { showToast(
-                        'User not found.'); }
-                    navigate('admin');
-                }
-                _renderModeration(main) {
-                    if (!Auth.isMod()) { main.innerHTML =
-                        '<p style="text-align:center;padding:40px;">Access Denied</p>'; return; }
-                    const reports = DB.getReports().filter(r => r.status === 'open');
-                    main.innerHTML = `
-                <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
-                  <h2>🛡 Moderation Queue</h2>
-                  <table>${reports.map(r=>`
-                    <tr><td>${r.category}</td><td>${DB.getUser(r.reportedUserId)?.username||'?'}</td><td>${new Date(r.timestamp).toLocaleDateString()}</td>
-                      <td><button class="btn btn-white btn-sm" onclick="App.instance._adminAction('dismiss','${r.id}')">Dismiss</button></td></tr>
-                  `).join('')||'<tr><td colspan="4">No open reports.</td></tr>'}</table>
-                </div>`;
-                }
-                _renderGame(main) {
-                    const expId = new URLSearchParams(window.location.hash.split('?')[1] || '').get('id') || 'exp-0';
-                    const exp = DB._data.experiences.find(e => e.id === expId) || DB._data.experiences[0];
-                    main.innerHTML = `
-                <div style="position:fixed;inset:0;top:56px;background:#000;z-index:500;">
-                  <div id="gameCanvas" style="width:100%;height:100%;"></div>
-                  <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:#fff;padding:6px 12px;border-radius:6px;font-size:13px;">❤ 100</div>
-                  <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.7);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;">
-                    <div style="font-weight:700;margin-bottom:4px;">Leaderboard</div>
-                    <div>1. ${Auth.sessionUser?.username||'You'} - 150</div><div>2. Player2 - 120</div><div>3. Player3 - 90</div>
-                  </div>
-                  <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:flex;gap:4px;">
-                    ${[1,2,3,4,5,6,7,8,9].map(i=>`<div style="width:36px;height:36px;background:rgba(0,0,0,0.6);border:1px solid #555;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">${i}</div>`).join('')}
-                  </div>
-                  <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.5);border-radius:16px;padding:6px 12px;color:#fff;font-size:13px;">Press <b>Esc</b> for menu · <b>WASD</b> to move</div>
-                  <button style="position:absolute;top:12px;right:140px;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;" onclick="navigate('home')">✕ Leave</button>
-                </div>`;
-                    setTimeout(() => this._initGame3D(exp), 200);
-                }
-                _initGame3D(exp) {
-                    const container = document.getElementById('gameCanvas');
-                    if (!container || !window.THREE) return;
-                    container.innerHTML = '';
-                    const w = container.clientWidth;
-                    const h = container.clientHeight;
-                    const scene = new THREE.Scene();
-                    scene.background = new THREE.Color(0x87CEEB);
-                    scene.fog = new THREE.Fog(0x87CEEB, 30, 80);
-                    const camera = new THREE.PerspectiveCamera(70, w / h, 0.5, 200);
-                    camera.position.set(0, 8, 20);
-                    camera.lookAt(0, 2, 0);
-                    const renderer = new THREE.WebGLRenderer({ antialias: true });
-                    renderer.setSize(w, h);
-                    renderer.shadowMap.enabled = true;
-                    container.appendChild(renderer.domElement);
-                    const sun = new THREE.DirectionalLight(0xfff5e6, 1.2);
-                    sun.position.set(30, 40, 20);
-                    sun.castShadow = true;
-                    sun.shadow.mapSize.set(1024, 1024);
-                    scene.add(sun);
-                    scene.add(new THREE.AmbientLight(0x607080));
-                    const groundGeo = new THREE.PlaneGeometry(100, 100);
-                    const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ color: 0x5a8a3c,
-                        roughness: 0.9 }));
-                    ground.rotation.x = -Math.PI / 2;
-                    ground.receiveShadow = true;
-                    scene.add(ground);
-                    for (let i = 0; i < 15; i++) {
-                        const hgt = Math.random() * 5 + 1;
-                        const geo = new THREE.BoxGeometry(Math.random() * 3 + 1, hgt, Math.random() * 3 + 1);
-                        const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(Math
-                            .random() * 0.3 + 0.05, 0.7, 0.4 + Math.random() * 0.3), roughness: 0.6 });
-                        const block = new THREE.Mesh(geo, mat);
-                        block.position.set((Math.random() - 0.5) * 40, hgt / 2, (Math.random() - 0.5) * 40);
-                        block.castShadow = true;
-                        block.receiveShadow = true;
-                        scene.add(block);
-                    }
-                    const playerGeo = new THREE.BoxGeometry(0.6, 1.8, 0.6);
-                    const playerMat = new THREE.MeshStandardMaterial({ color: 0x3498db, roughness: 0.4 });
-                    const player = new THREE.Mesh(playerGeo, playerMat);
-                    player.position.set(0, 0.9, 0);
-                    player.castShadow = true;
-                    scene.add(player);
-                    const keys = {};
-                    window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true;
-                        e.preventDefault(); });
-                    window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        const speed = 0.15;
-                        if (keys['w']) player.position.z -= speed;
-                        if (keys['s']) player.position.z += speed;
-                        if (keys['a']) player.position.x -= speed;
-                        if (keys['d']) player.position.x += speed;
-                        player.position.x = Math.max(-45, Math.min(45, player.position.x));
-                        player.position.z = Math.max(-45, Math.min(45, player.position.z));
-                        camera.position.x = player.position.x;
-                        camera.position.z = player.position.z + 12;
-                        camera.position.y = player.position.y + 6;
-                        camera.lookAt(player.position.x, player.position.y + 1, player.position.z);
-                        renderer.render(scene, camera);
-                    }
-                    animate();
-                    window.addEventListener('resize', () => {
-                        const w2 = container.clientWidth;
-                        const h2 = container.clientHeight;
-                        renderer.setSize(w2, h2);
-                        camera.aspect = w2 / h2;
-                        camera.updateProjectionMatrix();
-                    });
-                }
+                </div>
+              </div>
+            </div>`;
+            setTimeout(() => {
+                const sendBtn=document.getElementById('sendChat');
+                const input=document.getElementById('chatInput');
+                if (sendBtn&&input) { sendBtn.addEventListener('click',()=>this._sendMessage(withId,input)); input.addEventListener('keydown',e=>{ if(e.key==='Enter') this._sendMessage(withId,input); }); }
+            }, 100);
+        }
+        _sendMessage(toId, input) {
+            const text=input.value.trim();
+            if (!text||!toId) return;
+            const filterResult=profanityFilter(text);
+            if (filterResult.flagged) { showToast('Inappropriate content detected.'); return; }
+            const msg={ id:'msg-'+uuid(), from:Auth.sessionUser.id, to:toId, text:filterResult.filtered, time:nowISO(), read:false };
+            DB.addMessage(Auth.sessionUser.id, msg); DB.addMessage(toId, msg);
+            input.value=''; showToast('Message sent!'); navigate('messages?with='+toId);
+        }
+        _renderGroups(main) {
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
+              <h2>Groups</h2>
+              <div class="grid">
+                ${DB._data.groups.filter(g=>!g.deleted).map(g=>`
+                  <div class="card" style="text-align:center;">
+                    <div style="width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,#e2231a,#f7ba2c);margin:0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;">${g.name[0]}</div>
+                    <h4 style="margin:8px 0;">${g.name}</h4>
+                    <p style="color:#8c8e92;">👥 ${g.members.toLocaleString()} members</p>
+                    <button class="btn btn-green btn-sm">Join Group</button>
+                  </div>`).join('')}
+              </div>
+            </div>`;
+        }
+        _renderAdmin(main) {
+            if (!Auth.isAdmin()) { main.innerHTML='<p style="text-align:center;padding:40px;">Access Denied</p>'; return; }
+            const reports=DB.getReports().filter(r=>r.status==='open');
+            const vr=DB.getVerificationRequests().filter(v=>v.status==='pending');
+            const users=DB._data.users;
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1200px;margin:0 auto;">
+              <h2>🛡 Admin Panel</h2>
+              <div class="tab-nav">
+                <div class="tab active" onclick="App.instance._switchAdminTab('reports')">Reports (${reports.length})</div>
+                <div class="tab" onclick="App.instance._switchAdminTab('users')">Users (${users.length})</div>
+                <div class="tab" onclick="App.instance._switchAdminTab('verified')">Verification (${vr.length})</div>
+                <div class="tab" onclick="App.instance._switchAdminTab('actions')">Actions</div>
+              </div>
+              <div id="adminReports">
+                <table>${reports.map(r=>`<tr><td>${r.category}</td><td>${DB.getUser(r.reportedUserId)?.username||'?'}</td><td>${new Date(r.timestamp).toLocaleDateString()}</td><td><button class="btn btn-white btn-sm" onclick="App.instance._adminAction('warn','${r.id}','${r.reportedUserId}')">Warn</button> <button class="btn btn-white btn-sm" onclick="App.instance._adminAction('ban1d','${r.id}','${r.reportedUserId}')">Ban 1d</button> <button class="btn btn-red btn-sm" onclick="App.instance._adminAction('banperm','${r.id}','${r.reportedUserId}')">Perm Ban</button> <button class="btn btn-white btn-sm" onclick="App.instance._adminAction('dismiss','${r.id}')">Dismiss</button></td></tr>`).join('')||'<tr><td colspan="4">No open reports.</td></tr>'}</table>
+              </div>
+              <div id="adminUsers" style="display:none;">
+                <table>${users.map(u=>`<tr><td>${u.username} ${u.verifiedBadge?'✓':''}${u.isAdmin?'🛡':''}</td><td>🪙${u.robuxBalance||0}</td><td>${u.ban?'<span class="tag tag-red">Banned</span>':'<span class="tag tag-green">Active</span>'}</td><td><button class="btn btn-white btn-sm" onclick="App.instance._toggleMod('${u.id}')">${u.isModerator?'Remove Mod':'Make Mod'}</button>${u.ban?'<button class="btn btn-green btn-sm" onclick="App.instance._unbanUser(\''+u.id+'\')">Unban</button>':''}</td></tr>`).join('')}</table>
+              </div>
+              <div id="adminVerified" style="display:none;">
+                ${vr.map(v=>`<div class="card"><p><strong>${v.username}</strong>: ${v.reason}</p><button class="btn btn-green btn-sm" onclick="App.instance._approveVerify('${v.id}','${v.userId}')">Approve</button> <button class="btn btn-red btn-sm" onclick="App.instance._denyVerify('${v.id}')">Deny</button></div>`).join('')||'<p>No pending verification requests.</p>'}
+              </div>
+              <div id="adminActions" style="display:none;">
+                <div class="card">
+                  <h4>Manual Ban User</h4>
+                  <input type="text" id="banUserInput" placeholder="Username to ban">
+                  <input type="text" id="banReasonInput" placeholder="Reason" style="margin-top:8px;">
+                  <button class="btn btn-red btn-sm" style="margin-top:8px;" onclick="App.instance._manualBan()">Ban Permanently</button>
+                </div>
+              </div>
+            </div>`;
+        }
+        _switchAdminTab(tab) {
+            ['reports','users','verified','actions'].forEach(t=>{ const el=document.getElementById('admin'+t.charAt(0).toUpperCase()+t.slice(1)); if(el) el.style.display=t===tab?'block':'none'; });
+            document.querySelectorAll('.tab-nav .tab').forEach((t,i)=>t.classList.toggle('active',['reports','users','verified','actions'].indexOf(tab)===i));
+        }
+        _adminAction(action, reportId, userId) {
+            switch(action) {
+                case 'warn': if (userId) { const u=DB.getUser(userId); if(u){u.warnings.push({time:nowISO(),reason:'Moderator warning'});DB.updateUser(userId,{warnings:u.warnings});showToast('User warned.');} } DB.updateReport(reportId,{status:'resolved'}); break;
+                case 'ban1d': if (userId) DB.updateUser(userId,{ban:{banned:true,banEnd:new Date(Date.now()+86400000).toISOString(),reason:'Moderator action'}}); DB.updateReport(reportId,{status:'resolved'}); showToast('User banned for 1 day.'); break;
+                case 'banperm': if (userId) DB.updateUser(userId,{ban:{banned:true,banEnd:null,reason:'Permanent ban by moderator'}}); DB.updateReport(reportId,{status:'resolved'}); showToast('User permanently banned.'); break;
+                case 'dismiss': DB.updateReport(reportId,{status:'dismissed'}); showToast('Report dismissed.'); break;
             }
-            App.instance = null;
-            document.addEventListener('DOMContentLoaded', () => {
-                DB.init();
-                Auth.init();
-                App.instance = new App();
-                window.App = App;
-            });
-            window.navigate = navigate;
-            window.Auth = Auth;
-            window.DB = DB;
-            window.showToast = showToast;
-            window.profanityFilter = profanityFilter;
-        })();
-    </script>
+            navigate('admin');
+        }
+        _toggleMod(uid) { const u=DB.getUser(uid); if(u){DB.updateUser(uid,{isModerator:!u.isModerator});showToast(u.isModerator?'Moderator removed.':'Moderator granted.');} navigate('admin'); }
+        _unbanUser(uid) { DB.updateUser(uid,{ban:null}); showToast('User unbanned.'); navigate('admin'); }
+        _approveVerify(vrid,uid) { DB.updateVerificationRequest(vrid,{status:'approved'}); DB.updateUser(uid,{verifiedBadge:true}); showToast('Verified badge approved!'); navigate('admin'); }
+        _denyVerify(vrid) { DB.updateVerificationRequest(vrid,{status:'denied'}); showToast('Verification denied.'); navigate('admin'); }
+        _manualBan() { const uname=document.getElementById('banUserInput')?.value.trim(); const reason=document.getElementById('banReasonInput')?.value.trim()||'Violation'; const u=DB.getUserByUsername(uname); if(u){DB.updateUser(u.id,{ban:{banned:true,banEnd:null,reason}});showToast('User '+uname+' permanently banned.');}else{showToast('User not found.');} navigate('admin'); }
+        _renderModeration(main) {
+            if (!Auth.isMod()) { main.innerHTML='<p style="text-align:center;padding:40px;">Access Denied</p>'; return; }
+            const reports=DB.getReports().filter(r=>r.status==='open');
+            main.innerHTML = `
+            <div class="page active" style="padding:20px;max-width:1000px;margin:0 auto;">
+              <h2>🛡 Moderation Queue</h2>
+              <table>${reports.map(r=>`<tr><td>${r.category}</td><td>${DB.getUser(r.reportedUserId)?.username||'?'}</td><td>${new Date(r.timestamp).toLocaleDateString()}</td><td><button class="btn btn-white btn-sm" onclick="App.instance._adminAction('dismiss','${r.id}')">Dismiss</button></td></tr>`).join('')||'<tr><td colspan="4">No open reports.</td></tr>'}</table>
+            </div>`;
+        }
+        _renderGame(main) {
+            const expId=new URLSearchParams(window.location.hash.split('?')[1]||'').get('id')||'exp-0';
+            const exp=DB._data.experiences.find(e=>e.id===expId)||DB._data.experiences[0];
+            main.innerHTML = `
+            <div style="position:fixed;inset:0;top:56px;background:#000;z-index:500;">
+              <div id="gameCanvas" style="width:100%;height:100%;"></div>
+              <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:#fff;padding:6px 12px;border-radius:6px;font-size:13px;">❤ 100</div>
+              <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.7);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;">
+                <div style="font-weight:700;margin-bottom:4px;">Leaderboard</div>
+                <div>1. ${Auth.sessionUser?.username||'You'} - 150</div><div>2. Player2 - 120</div><div>3. Player3 - 90</div>
+              </div>
+              <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.5);border-radius:16px;padding:6px 12px;color:#fff;font-size:13px;"><b>WASD</b> to move</div>
+              <button style="position:absolute;top:12px;right:140px;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;" onclick="navigate('home')">✕ Leave</button>
+            </div>`;
+            setTimeout(()=>this._initGame3D(exp), 200);
+        }
+        _initGame3D(exp) {
+            const container=document.getElementById('gameCanvas');
+            if (!container||!window.THREE) return;
+            container.innerHTML='';
+            const w=container.clientWidth, h=container.clientHeight;
+            const scene=new THREE.Scene();
+            scene.background=new THREE.Color(0x87CEEB);
+            scene.fog=new THREE.Fog(0x87CEEB,30,80);
+            const camera=new THREE.PerspectiveCamera(70,w/h,0.5,200);
+            camera.position.set(0,8,20); camera.lookAt(0,2,0);
+            const renderer=new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(w,h); renderer.shadowMap.enabled=true;
+            container.appendChild(renderer.domElement);
+            const sun=new THREE.DirectionalLight(0xfff5e6,1.2);
+            sun.position.set(30,40,20); sun.castShadow=true; scene.add(sun);
+            scene.add(new THREE.AmbientLight(0x607080));
+            const ground=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshStandardMaterial({color:0x5a8a3c,roughness:0.9}));
+            ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+            for (let i=0;i<15;i++) {
+                const hgt=Math.random()*5+1;
+                const block=new THREE.Mesh(new THREE.BoxGeometry(Math.random()*3+1,hgt,Math.random()*3+1),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(Math.random()*0.3+0.05,0.7,0.4+Math.random()*0.3),roughness:0.6}));
+                block.position.set((Math.random()-0.5)*40,hgt/2,(Math.random()-0.5)*40);
+                block.castShadow=true; block.receiveShadow=true; scene.add(block);
+            }
+            const player=new THREE.Mesh(new THREE.BoxGeometry(0.6,1.8,0.6),new THREE.MeshStandardMaterial({color:0x3498db,roughness:0.4}));
+            player.position.set(0,0.9,0); player.castShadow=true; scene.add(player);
+            const keys={};
+            window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true; e.preventDefault();});
+            window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
+            const animate=()=>{
+                requestAnimationFrame(animate);
+                const spd=0.15;
+                if(keys['w']) player.position.z-=spd;
+                if(keys['s']) player.position.z+=spd;
+                if(keys['a']) player.position.x-=spd;
+                if(keys['d']) player.position.x+=spd;
+                player.position.x=Math.max(-45,Math.min(45,player.position.x));
+                player.position.z=Math.max(-45,Math.min(45,player.position.z));
+                camera.position.x=player.position.x;
+                camera.position.z=player.position.z+12;
+                camera.position.y=player.position.y+6;
+                camera.lookAt(player.position.x,player.position.y+1,player.position.z);
+                renderer.render(scene,camera);
+            };
+            animate();
+            window.addEventListener('resize',()=>{ const w2=container.clientWidth,h2=container.clientHeight; renderer.setSize(w2,h2); camera.aspect=w2/h2; camera.updateProjectionMatrix(); });
+        }
+    }
+
+    App.instance = null;
+    document.addEventListener('DOMContentLoaded', () => {
+        DB.init(); Auth.init();
+        App.instance = new App();
+        window.App = App;
+    });
+    window.navigate = navigate;
+    window.Auth = Auth;
+    window.DB = DB;
+    window.showToast = showToast;
+    window.profanityFilter = profanityFilter;
+})();
+</script>
 </body>
 </html>
